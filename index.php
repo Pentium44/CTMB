@@ -8,7 +8,7 @@
  * Website : http://cdrom.co.nf/cutils.php - Maintained By Chris Dorman
  * CTMB is released with NO WARRANTY.
  * 
- *//
+ */
 
 
 include "config.php";
@@ -33,9 +33,9 @@ if (isset($_GET['action']))
 	if ($_GET['action']=="userlist")
 	{
 		$userlist = file_get_contents("db/userlist.txt");
-		echo "<div class=\"text\">";
+		echo "<div class=\"text\"><ul>";
 		echo $userlist;
-		echo "</div>";
+		echo "</ul></div>";
 
 	}
 }

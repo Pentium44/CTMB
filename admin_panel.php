@@ -8,7 +8,7 @@
  * Website : http://cdrom.co.nf/cutils.php - Maintained By Chris Dorman
  * CTMB is released with NO WARRANTY.
  * 
- *//
+ */
 
 include "config.php";
 print <<<EOD
@@ -35,27 +35,67 @@ if (isset($action))
 	{
 		if ($username==$admin_account)
 		{
-			$password = $_POST['password'];
-			$userpass = file_get_contents("db/users/" . $username);
-			$decrypt_pass = base64_decode($userpass);
-			if ($password==$decrypt_pass)
+			$method = $_POST['method'];
+			if ($method=="Remove User")
 			{
-				print <<<EOD
-				<div class="text"><b><h2>Administration Panel</h2></b>
-				<b>Remove User</b><br>
-				<form action="admin_panel.php?action=rmuser" method="post">
-				Username: <input type="text" name="username"><br>
-				<input type="submit" value="Remove User" name="remove_user" id="remove_user">
-				</div>	
+				$password = $_POST['password'];
+				$userpass = file_get_contents("db/users/" . $username);
+				$decrypt_pass = base64_decode($userpass);
+				if ($password==$decrypt_pass)
+				{
+					print <<<EOD
+					<div class="text"><b><h2>Administration Panel</h2></b>
+					<b>Remove User</b><br>
+					<form action="admin_panel.php?action=rmuser" method="post">
+					Username: <input type="text" name="username"><br>
+					<input type="submit" value="Remove User" name="remove_user" id="remove_user">
+					</div>	
 EOD;
+				}
+				else
+				{
+					print <<<EOD
+					<div class="text">Error: Administrator password incorrect</div>
+EOD;
+				}	
+			}
+			else if ($method=="Pending Users")
+			{
+				$password = $_POST['password'];
+				$userpass = file_get_contents("db/users/" . $username);
+				$decrypt_pass = base64_decode($userpass);
+				if ($password==$decrypt_pass)
+				{
+					$pendingusers = file_get_contents("db/pendingusers.txt");
+					print <<<EOD
+					<div class="text"><b><h2>Pending Posts</h2></b><br>
+EOD;
+					echo $pendingusers;
+					print <<<EOD
+					<br><br>
+					<form action="admin_panel.php?action=validate_user" method="post">
+					Username: <input type="text" name="username"><br>
+					Action: <select name="user_action">
+						<option>Accept</option>
+						<option>Decline</option>
+						</select><br>
+					<input type="submit" value="Validate User" name="validate_user" id="validate_user">
+					</div>	
+EOD;
+				}
+				else
+				{
+					print <<<EOD
+					<div class="text">Error: Administrator password incorrect</div>
+EOD;
+				}
 			}
 			else
 			{
 				print <<<EOD
-				<div class="text">Error: Administrator password incorrect</div>
+				<div class="text">Error: Unknown method</div>
 EOD;
 			}
-			
 		}
 		else
 		{
@@ -81,7 +121,58 @@ EOD;
 		else
 		{
 			print <<<EOD
-			<div class="text">Error : Username not specified</div>
+			<div class="text">Error: Username not specified</div>
+EOD;
+		}
+	}
+	else if ($action=="validate_user")
+	{
+		if (isset($_POST['user_action']) && isset($_POST['validate_user']))
+		{
+			if ($_POST['username']!="")
+			{
+				if (file_exists("db/users/" . $_POST['username']))
+				{
+					if ($_POST['user_action']=="Accept")
+					{
+						$username = $_POST['username'];
+						$pendinguserslist = file_get_contents("db/pendingusers.txt");
+						$remove_user = str_replace($_POST['username'] . "<br>", "", $pendinguserslist);
+						file_put_contents("db/users/" . $_POST['username'] . ".validation", "valid");
+						file_put_contents("db/pendingusers.txt", $remove_user);
+						print <<<EOD
+						<div class="text">$username validated</div>
+EOD;
+					}
+					else
+					{
+						$pendinguserslist = file_get_contents("db/pendingusers.txt");
+						$remove_user = str_replace($_POST['username'] . "<br>", "", $pendinguserslist);
+						file_put_contents("db/users/" . $_POST['username'] . ".validation", "invalid");
+						file_pet_contents("db/pendingusers.txt", $remove_user);
+						print <<<EOD
+						<div class="text">$username validated</div>
+EOD;
+					}
+				}
+				else
+				{
+					print <<<EOD
+					<div class="text">Error: User was not found</div>
+EOD;
+				}
+			}
+			else
+			{
+				print <<<EOD
+				<div class="text">Error: No username specified</div>
+EOD;
+			}
+		}
+		else
+		{
+			print <<<EOD
+			<div class="text">Error: Someone is trying to validate themselves!</div>
 EOD;
 		}
 	}
@@ -94,6 +185,10 @@ print <<<EOD
 		<form action="admin_panel.php?action=login" method="post">
 		Admin Username: <input type="text" name="username"><br>
 		Admin Password: <input type="password" name="password"><br>
+		Action: <select name="method">
+				<option>Remove User</option>
+				<option>Pending Users</option>
+				</select><br>
 		<input type="submit" value="Login">
 	</div>
 EOD;
@@ -104,4 +199,5 @@ print <<<EOD
 </body>
 </html>
 EOD;
+
 ?>

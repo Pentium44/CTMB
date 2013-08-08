@@ -9,9 +9,9 @@
  * Website : http://cdrom.co.nf/cutils.php - Maintained By Chris Dorman
  * CTMB is released with NO WARRANTY.
  * 
- *//
+ */
 
 $title = "CT Message Board"; // Forum title
 $admin_account = ""; // Admin User for the forum
-
+$validation = "true"; // Users have to be validated by admin before being able to post or reply
 ?>

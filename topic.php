@@ -9,7 +9,7 @@
  * Website : http://cdrom.co.nf/cutils.php - Maintained By Chris Dorman
  * CTMB is released with NO WARRANTY.
  * 
- *//
+ */
 
 include "config.php";
 print <<<EOD
@@ -99,16 +99,36 @@ EOD;
 				$decrypt_pass = base64_decode($userpass);
 				if ($password==$decrypt_pass)
 				{
-					$id = $_GET['id'];
-					$getoldcontent = file_get_contents("db/posts/$id.txt");
-					$text = htmlentities(stripslashes($_POST["text"]));
-					include "bb.php";
-					$bb = bbcode_format($text);
-					$newcontent = "<center><b>" . $username . "</b></center><hr><br>" . $bb . "<br><hr>"; 
-					file_put_contents("db/posts/$id.txt", $getoldcontent . $newcontent);
-					print <<<EOD
-					<div class="text">Your reply to topic id $id was successful.</div>
+					$validation = file_get_contents("db/users/" . $username . ".validation");
+					if (file_exists("db/users/" . $username . ".validation"))
+					{
+						if ($validation=="valid")
+						{
+							$id = $_GET['id'];
+							$getoldcontent = file_get_contents("db/posts/$id.txt");
+							$text = htmlentities(stripslashes($_POST["text"]));
+							$text2 = nl2br($text);
+							include "bb.php";
+							$bb = bbcode_format($text2);
+							$newcontent = "<center><b>" . $username . "</b></center><hr><br>" . $bb . "<br><hr>"; 
+							file_put_contents("db/posts/$id.txt", $getoldcontent . $newcontent);
+							print <<<EOD
+							<div class="text">Your reply to topic id $id was successful.</div>
 EOD;
+						}
+						else
+						{
+							print <<<EOD
+							<div class="text">Error: Your account has not been validated, or you have been declined by the board administrator, in which you cannot reply or post.</div>
+EOD;
+						}
+					}
+					else
+					{
+						print <<<EOD
+						<div class="text">Error: Your account has not been validated, or you have been declined by the board administrator, in which you cannot reply or post.</div>
+EOD;
+					}
 				}
 				else
 				{
@@ -129,7 +149,7 @@ EOD;
 	{
 		print <<<EOD
 	<div class="text">
-	<h2><b>Reply</b></h2>
+	<h2><b>Create a New Topic</b></h2>
 	<form action="topic.php?action=donewtopic" method="post">
 	Username: <input type="text" name="username"><br>
 	Password: <input type="password" name="password"><br>
@@ -150,18 +170,38 @@ EOD;
 			$decrypt_pass = base64_decode($userpass);
 			if ($password==$decrypt_pass)
 			{
-				$text = htmlentities(stripslashes($_POST["text"]));
-				include "bb.php";
-				$bb = bbcode_format($text);
-				$newcontent = "<center><b>" . $username . "</b></center><hr><br>" . $bb . "<br><hr>"; 
-				$randomid = rand(1,99999);
-				file_put_contents("db/posts/$randomid.txt", $newcontent);
-				$list = "<b><a href=\"topic.php?action=view&id=$randomid\">$topic</a></b> -by $username<br>";
-				$list .= file_get_contents('db/list.txt', true);
-				file_put_contents("db/list.txt", $list);
-				print <<<EOD
-				<div class="text">Your Topic has been created</div>
+				$validation = file_get_contents("db/users/" . $username . ".validation");
+				if (file_exists("db/users/" . $username . ".validation"))
+				{
+					if ($validation=="valid")
+					{
+						$text = htmlentities(stripslashes($_POST["text"]));
+						$text2 = nl2br($text);
+						include "bb.php";
+						$bb = bbcode_format($text2);
+						$newcontent = "<center><b>" . $username . "</b></center><hr><br>" . $bb . "<br><hr>"; 
+						$randomid = rand(1,99999);
+						file_put_contents("db/posts/$randomid.txt", $newcontent);
+						$list = "<li><b><a href=\"topic.php?action=view&id=$randomid\">$topic</a></b> -by $username<br></li>";
+						$list .= file_get_contents('db/list.txt', true);
+						file_put_contents("db/list.txt", $list);
+						print <<<EOD
+						<div class="text">Your Topic has been created</div>
 EOD;
+					}
+					else
+					{
+						print <<<EOD
+						<div class="text">Error: Your account has not been validated, or you have been declined by the board administrator, in which you cannot reply or post.</div>
+EOD;
+					}
+				}
+				else
+				{
+					print <<<EOD
+					<div class="text">Error: Your account has not been validated, or you have been declined by the board administrator, in which you cannot reply or post.</div>
+EOD;
+				}
 			}
 			else
 			{
@@ -185,4 +225,5 @@ print <<<EOD
 </body>
 </html>
 EOD;
+
 ?>

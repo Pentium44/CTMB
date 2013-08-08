@@ -9,7 +9,7 @@
  * Website : http://cdrom.co.nf/cutils.php - Maintained By Chris Dorman
  * CTMB is released with NO WARRANTY.
  * 
- *//
+ */
 
 include "config.php";
 
@@ -63,6 +63,14 @@ if (isset($action))
 					{
 						if ($password==$password_again)
 						{
+							if ($validation!="true")
+							{
+								file_put_contents("db/users/" . $username . ".validation", "valid");
+							}
+							else
+							{
+								file_put_contents("db/pendingusers.txt", $username . "<br>");
+							}
 							$encrypt_pass = base64_encode($password);
 							file_put_contents("db/users/" . $username, $encrypt_pass);
 							$old_users = file_get_contents("db/userlist.txt");

@@ -18,6 +18,10 @@ me at <cdorm245@gmail.com>
 Thanks, Chris
 
 Change Log
+1.25 --
+*Added post validation
+*Added nl2br to post and reply
+*tweaked CSS, and HTML
 
 1.12 --
 *Added User Support (With Password Encryption)

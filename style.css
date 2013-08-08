@@ -7,7 +7,7 @@
  * Website : http://cdrom.co.nf/cutils.php - Maintained By Chris Dorman
  * CTMB is released with NO WARRANTY.
  * 
- *//
+ */
 body {
 	font-family: Gothic, sans-serif;
 	color: #ffffff;
@@ -20,7 +20,7 @@ body {
 
 a:link { color: #ffffff; padding: 5px; }
 a:visited { color: #ffffff; padding: 5px; }
-a:hover { color: #E6E6E6; text-decoration: none; padding: 5px; }
+a:hover { color: #ff00ff; text-decoration: none; padding: 5px; }
 
 .title {
 	text-align: center;
