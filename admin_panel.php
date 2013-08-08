@@ -15,21 +15,21 @@ print <<<EOD
 <html>
 	<head>
 		<title>$title</title>
-		<link rel="stylesheet" type="text/css" href="style.css">
+		<link rel="stylesheet" type="text/css" href="themes/$theme/style.css">
 	</head>
 <body>
 	<div class="title">$title</div>
+	<div class="board">
 EOD;
 
 /* Menu List for Login/out, index, and admin panel */
 	print <<<EOD
-	<center><span class="menu"><a href="index.php">Forum Index</a><a href="signup.php">Register</a><a href="index.php?action=userlist">Userlist</a><a href="admin_panel.php">Administration Panel</a></span></center><br>
+	<center><span class="menu"><a href="index.php">Forum Index</a><a href="signup.php">Register</a><a href="index.php?action=userlist">Userlist</a><a href="admin_panel.php">Administration Panel</a><a href="avatar.php">Avatars</a></span></center><br>
 EOD;
 
-$action = $_GET['action'];
-
-if (isset($action))
+if (isset($_GET['action']))
 {
+	$action = $_GET['action'];
 	$username = $_POST['username'];
 	if ($action=="login")
 	{
@@ -68,17 +68,14 @@ EOD;
 				{
 					$pendingusers = file_get_contents("db/pendingusers.txt");
 					print <<<EOD
-					<div class="text"><b><h2>Pending Posts</h2></b><br>
+					<div class="text"><b><h2>Pending Users</h2></b><br>
 EOD;
 					echo $pendingusers;
 					print <<<EOD
 					<br><br>
 					<form action="admin_panel.php?action=validate_user" method="post">
 					Username: <input type="text" name="username"><br>
-					Action: <select name="user_action">
-						<option>Accept</option>
-						<option>Decline</option>
-						</select><br>
+					Action (Check box to accept user): <input type="checkbox" name="valid_action" value="accept">Accept<br>
 					<input type="submit" value="Validate User" name="validate_user" id="validate_user">
 					</div>	
 EOD;
@@ -104,6 +101,7 @@ EOD;
 EOD;
 		}
 	}
+	
 	if ($action=="rmuser")
 	{
 		if (isset($_POST['username']) && isset($_POST['remove_user']))
@@ -125,31 +123,28 @@ EOD;
 EOD;
 		}
 	}
-	else if ($action=="validate_user")
+	
+	if ($action=="validate_user")
 	{
-		if (isset($_POST['user_action']) && isset($_POST['validate_user']))
+		if (isset($_POST['username']))
 		{
 			if ($_POST['username']!="")
 			{
 				if (file_exists("db/users/" . $_POST['username']))
 				{
-					if ($_POST['user_action']=="Accept")
+					$username = $_POST['username'];
+					$pendinguserslist = file_get_contents("db/pendingusers.txt");
+					$remove_user = str_replace($_POST['username'] . "<br>", "", $pendinguserslist);
+					if (!isset($_POST['valid_action']))
 					{
-						$username = $_POST['username'];
-						$pendinguserslist = file_get_contents("db/pendingusers.txt");
-						$remove_user = str_replace($_POST['username'] . "<br>", "", $pendinguserslist);
+						file_put_contents("db/users/" . $_POST['username'] . ".validation", "ibvalid");
+						file_put_contents("db/pendingusers.txt", $remove_user);
+						echo "<div class=\"text\">$username declined</div>";
+					}
+					if (isset($_POST['valid_action']))
+					{
 						file_put_contents("db/users/" . $_POST['username'] . ".validation", "valid");
 						file_put_contents("db/pendingusers.txt", $remove_user);
-						print <<<EOD
-						<div class="text">$username validated</div>
-EOD;
-					}
-					else
-					{
-						$pendinguserslist = file_get_contents("db/pendingusers.txt");
-						$remove_user = str_replace($_POST['username'] . "<br>", "", $pendinguserslist);
-						file_put_contents("db/users/" . $_POST['username'] . ".validation", "invalid");
-						file_pet_contents("db/pendingusers.txt", $remove_user);
 						print <<<EOD
 						<div class="text">$username validated</div>
 EOD;
@@ -195,6 +190,7 @@ EOD;
 }
 
 print <<<EOD
+</div>
 <br><div class="footer">&copy; CTMB - CrazyCoder Productions, 2012-2013</div>
 </body>
 </html>

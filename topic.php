@@ -16,7 +16,7 @@ print <<<EOD
 <html>
 	<head>
 		<title>$title</title>
-		<link rel="stylesheet" type="text/css" href="style.css">
+		<link rel="stylesheet" type="text/css" href="themes/$theme/style.css">
 	</head>
 <body>
 	<div class="title">$title</div>
@@ -24,7 +24,7 @@ EOD;
 
 /* Menu List for Login/out, index, and admin panel */
 	print <<<EOD
-	<center><span class="menu"><a href="index.php">Forum Index</a><a href="signup.php">Register</a><a href="index.php?action=userlist">Userlist</a><a href="admin_panel.php">Administration Panel</a></span></center><br>
+	<center><span class="menu"><a href="index.php">Forum Index</a><a href="signup.php">Register</a><a href="index.php?action=userlist">Userlist</a><a href="admin_panel.php">Administration Panel</a><a href="avatar.php">Avatars</a></span></center><br>
 EOD;
 
 $action = $_GET['action'];
@@ -38,12 +38,13 @@ if (isset($action))
 			if (file_exists("db/posts/$id.txt"))
 			{
 				print <<<EOD
-				<div class="text">
+				<div class="text"><center><table border='1'>
 EOD;
 				$file_content = file_get_contents("db/posts/$id.txt");
 				echo $file_content;
 				
 				print <<<EOD
+				</table></center>
 				</div><br><div class="text"><b><a href="topic.php?action=reply&id=$id">Reply</a></b></div>
 EOD;
 			}
@@ -74,6 +75,15 @@ EOD;
 			<form action="topic.php?action=doreply&id=$id" method="post">
 			Username: <input type="text" name="username"><br>
 			Password: <input type="password" name="password"><br>
+			Avatar:
+EOD;
+				echo "<select name='avatar'>";
+				$avatar_list = array_map("htmlspecialchars", scandir("db/avatars/"));
+				foreach ($avatar_list as $file)
+				echo "<option value='$file'>$file</option>";
+				echo "</select><br>";
+				
+				print <<<EOD
 			<textarea name="text" cols="35" rows="8">Post Body</textarea><br>
 			<input type="submit" value="Submit">
 			</div>
@@ -110,11 +120,41 @@ EOD;
 							$text2 = nl2br($text);
 							include "bb.php";
 							$bb = bbcode_format($text2);
-							$newcontent = "<center><b>" . $username . "</b></center><hr><br>" . $bb . "<br><hr>"; 
+							if ($show_ips=="true")
+							{
+								if ($_POST['avatar']==".")
+								{
+									$newcontent = "<tr><td class='userinfo'><b>" . $username . "</b><br><img style='margin: auto; width: 140px;' src='db/avatars/default.jpg'><br>" . $_SERVER['REMOTE_ADDR'] . "</td><td class='userpost'>" . $bb . "</td></tr>"; 								
+								}
+								else if ($_POST['avatar']=="..")
+								{
+									$newcontent = "<tr><td class='userinfo'><b>" . $username . "</b><br><img style='margin: auto; width: 140px;' src='db/avatars/default.jpg'><br>" . $_SERVER['REMOTE_ADDR'] . "</td><td class='userpost'>" . $bb . "</td></tr>"; 								
+								}
+								else
+								{
+									$newcontent = "<tr><td class='userinfo'><b>" . $username . "</b><br><img style='margin: auto; width: 140px;' src='db/avatars/" . $_POST['avatar'] . "'><br>" . $_SERVER['REMOTE_ADDR'] . "</td><td class='userpost'>" . $bb . "</td></tr>"; 	
+								}
+							}
+							else
+							{
+								if ($_POST['avatar']==".")
+								{
+									$newcontent = "<tr><td class='userinfo'><b>" . $username . "</b><br><img style='margin: auto; width: 140px;' src='db/avatars/default.jpg'></td><td class='userpost'>" . $bb . "</td></tr>"; 								
+								}
+								else if ($_POST['avatar']=="..")
+								{
+									$newcontent = "<tr><td class='userinfo'><b>" . $username . "</b><br><img style='margin: auto; width: 140px;' src='db/avatars/default.jpg'></td><td class='userpost'>" . $bb . "</td></tr>"; 								
+								}
+								else
+								{
+									$newcontent = "<tr><td class='userinfo'><b>" . $username . "</b><br><img style='margin: auto; width: 140px;' src='db/avatars/" . $_POST['avatar'] . "'></td><td class='userpost'>" . $bb . "</td></tr>"; 	
+								}
+							}
 							file_put_contents("db/posts/$id.txt", $getoldcontent . $newcontent);
 							print <<<EOD
-							<div class="text">Your reply to topic id $id was successful.</div>
+							<div class="text">Your reply to topic id $id was successful. redirecting in 3 seconds. If redirect fails, <a href="topic.php?action=view&id=$id">Click Here</a></div>
 EOD;
+							header( "refresh:3;url=topic.php?action=view&id=$id" );
 						}
 						else
 						{
@@ -154,6 +194,15 @@ EOD;
 	Username: <input type="text" name="username"><br>
 	Password: <input type="password" name="password"><br>
 	Topic Name: <input type="text" name="topic"><br>
+	Avatar:
+EOD;
+		echo "<select name='avatar'>";
+		$avatar_list = array_map("htmlspecialchars", scandir("db/avatars/"));
+		foreach ($avatar_list as $file)
+		echo "<option value='$file'>$file</option>";
+		echo "</select><br>";
+				
+		print <<<EOD
 	<textarea name="text" cols="35" rows="8">Post Body</textarea><br>
 	<input type="submit" value="Submit">
 	</div>
@@ -179,15 +228,45 @@ EOD;
 						$text2 = nl2br($text);
 						include "bb.php";
 						$bb = bbcode_format($text2);
-						$newcontent = "<center><b>" . $username . "</b></center><hr><br>" . $bb . "<br><hr>"; 
+						if ($show_ips=="true")
+						{
+							if ($_POST['avatar']==".")
+							{
+								$newcontent = "<center><h3>$topic</h3></center><tr><td class='userinfo'><b>" . $username . "</b><br><img style='margin: auto; width: 140px;' src='db/avatars/default.jpg'><br>" . $_SERVER['REMOTE_ADDR'] . "</td><td class='userpost'>" . $bb . "</td></tr>"; 								
+							}
+							else if ($_POST['avatar']=="..")
+							{
+								$newcontent = "<center><h3>$topic</h3></center><tr><td class='userinfo'><b>" . $username . "</b><br><img style='margin: auto; width: 140px;' src='db/avatars/default.jpg'><br>" . $_SERVER['REMOTE_ADDR'] . "</td><td class='userpost'>" . $bb . "</td></tr>"; 								
+							}
+							else
+							{
+								$newcontent = "<center><h3>$topic</h3></center><tr><td class='userinfo'><b>" . $username . "</b><br><img style='margin: auto; width: 140px;' src='db/avatars/" . $_POST['avatar'] . "'><br>" . $_SERVER['REMOTE_ADDR'] . "</td><td class='userpost'>" . $bb . "</td></tr>"; 	
+							}
+						}
+						else
+						{
+							if ($_POST['avatar']==".")
+							{
+								$newcontent = "<center><h3>$topic</h3></center><tr><td class='userinfo'><b>" . $username . "</b><br><img style='margin: auto; width: 140px;' src='db/avatars/default.jpg'></td><td class='userpost'>" . $bb . "</td></tr>"; 								
+							}
+							else if ($_POST['avatar']=="..")
+							{
+								$newcontent = "<center><h3>$topic</h3></center><tr><td class='userinfo'><b>" . $username . "</b><br><img style='margin: auto; width: 140px;' src='db/avatars/default.jpg'></td><td class='userpost'>" . $bb . "</td></tr>"; 								
+							}
+							else
+							{
+								$newcontent = "<center><h3>$topic</h3></center><tr><td class='userinfo'><b>" . $username . "</b><br><img style='margin: auto; width: 140px;' src='db/avatars/" . $_POST['avatar'] . "'></td><td class='userpost'>" . $bb . "</td></tr>"; 	
+							}
+						}
 						$randomid = rand(1,99999);
 						file_put_contents("db/posts/$randomid.txt", $newcontent);
 						$list = "<li><b><a href=\"topic.php?action=view&id=$randomid\">$topic</a></b> -by $username<br></li>";
 						$list .= file_get_contents('db/list.txt', true);
 						file_put_contents("db/list.txt", $list);
 						print <<<EOD
-						<div class="text">Your Topic has been created</div>
+						<div class="text">Topic $id post was successful. redirecting in 3 seconds. If redirect fails, <a href="topic.php?action=view&id=$id">Click Here</a></div>
 EOD;
+						header( "refresh:3;url=topic.php?action=view&id=$id" );
 					}
 					else
 					{

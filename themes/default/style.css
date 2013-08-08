@@ -8,27 +8,33 @@
  * CTMB is released with NO WARRANTY.
  * 
  */
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:300,400);
 body {
-	font-family: Gothic, sans-serif;
+	font-family: "Open Sans", sans-serif;
 	color: #ffffff;
 	/*background-image:url('images/bg.jpg');*/
 	background-image:url('images/bg-black.jpg');
 	background-repeat:repeat;
 	background-color: #444444;
 	font-size: 15px;
+	
+  /*Added to .board
+	max-width: 850px;
+	margin: auto;*/ 
 }
 
 a:link { color: #ffffff; padding: 5px; }
 a:visited { color: #ffffff; padding: 5px; }
-a:hover { color: #ff00ff; text-decoration: none; padding: 5px; }
+a:hover { color: #999999; text-decoration: none; padding: 5px; text-shadow: 0px 1px 2px #ffffff;}
 
 .title {
 	text-align: center;
 	font-size: 38px;
 	padding: 16px;
-	border: solid 2px #777777;
-	background: #999999;
+	border: solid 2px #444444;
+	background: #555555;
 	border-radius: 14px;
+	box-shadow: 0px 0px 8px #ffffff;
 }
 
 .menu {
@@ -36,7 +42,7 @@ a:hover { color: #ff00ff; text-decoration: none; padding: 5px; }
 	font-size: 20px;
 	padding: 1px;
 	/* border: solid 1px #666666; */
-	background: #888888;
+	background: #444444;
 	border-bottom-left-radius: 10px; 
 	border-bottom-right-radius: 10px;
 }
@@ -44,13 +50,32 @@ a:hover { color: #ff00ff; text-decoration: none; padding: 5px; }
 .text {
 	padding: 12px;
 	/* border: solid 1px #666666; */
-	background: #777777;
+	background: #333333;
 	border: solid 1px #555555;
 	border-radius: 10px;
+	box-shadow: 0px 0px 10px #ffffff;
 }
 
 .footer {
 	background: #000000;
 	font-size: 10px;
 	text-align: center;
+}
+
+.userinfo {
+	width: 150px;
+	vertical-align: top;
+	text-align: center;
+}
+
+.userpost {
+	width: 700px;
+	vertical-align: top;
+}
+
+/* board div (For width and margin) */
+
+.board {
+	max-width: 850px;
+	margin: auto;
 }

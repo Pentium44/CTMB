@@ -18,6 +18,19 @@ me at <cdorm245@gmail.com>
 Thanks, Chris
 
 Change Log
+
+1.44--
+*Theme support
+*Fixed validation bug
+*Modified HTML Code
+
+1.37 --
+*Added New Fonts (Sans-Serif as backup)
+*Added global avatar support
+*Added User IP posting (There IP is posted on there posts, and replies)
+*Added post title's at the top of the posts while being viewed
+*Tweaked the HTML/CSS (Added tables for posts)
+
 1.25 --
 *Added post validation
 *Added nl2br to post and reply
