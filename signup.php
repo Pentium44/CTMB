@@ -102,7 +102,6 @@ if (!isset($action))
 	<h2><b>Create An Account</b></h2><br>
 	<form action='signup.php?action=go' method='post'>
 	Username: <input type='text' name='username'><br>
-	Email (Not Published): <input type="text" name="email"><br>
 	Password: <input type='password' name='password'><br>
 	Password Again: <input type="password" name="password_again"><br>
 	<input type='submit' value='Create Account' name="enter" id="enter">

@@ -68,11 +68,11 @@ EOD;
 				{
 					$pendingusers = file_get_contents("db/pendingusers.txt");
 					print <<<EOD
-					<div class="text"><b><h2>Pending Users</h2></b><br>
+					<div class="text"><b><h2>Pending Users</h2></b>
 EOD;
 					echo $pendingusers;
 					print <<<EOD
-					<br><br>
+					<br>
 					<form action="admin_panel.php?action=validate_user" method="post">
 					Username: <input type="text" name="username"><br>
 					Action (Check box to accept user): <input type="checkbox" name="valid_action" value="accept">Accept<br>
