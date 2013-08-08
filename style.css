@@ -1,42 +1,56 @@
-/* This script is part of CTMB. CTMB is released under the CC BY-NC, and does not include
- * Warranty of any kind. View the Copy of the CC BY-NC license located in the 
- * CTMB archive. CTMB was created by:
- * (c) Chris Dorman, 2012-2013 <cdorm245@gmail.com>
- */
-
-a:link { color: #D8D8D8; }
-a:visited { color: #D8D8D8; }
-a:hover { color: #0000FF; text-decoration: none; }
-
+/*
+ * CTMB - Crazy Tiny Message Board - (C) CrazyCoder Productions, 2012-2013
+ * CTMB (Crazy Tiny Message Board) is a simple, flatfile database message
+ * board that is created by Chris Dorman (CrazyCoder Productions), 2012-2013
+ * CTMB is released under the Creative Commons - BY - NC 3.0 NonPorted license
+ * 
+ * Website : http://cdrom.co.nf/cutils.php - Maintained By Chris Dorman
+ * CTMB is released with NO WARRANTY.
+ * 
+ *//
 body {
-	font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif; 
-	color: #999999;
-	background: #666666;
+	font-family: Gothic, sans-serif;
+	color: #ffffff;
+	/*background-image:url('images/bg.jpg');*/
+	background-image:url('images/bg-black.jpg');
+	background-repeat:repeat;
+	background-color: #444444;
+	font-size: 15px;
 }
+
+a:link { color: #ffffff; padding: 5px; }
+a:visited { color: #ffffff; padding: 5px; }
+a:hover { color: #E6E6E6; text-decoration: none; padding: 5px; }
 
 .title {
 	text-align: center;
-	padding: 4px;
-	font-size: 32px;	
+	font-size: 38px;
+	padding: 16px;
+	border: solid 2px #777777;
+	background: #999999;
+	border-radius: 14px;
 }
 
-.desc {
+.menu {
 	text-align: center;
-	padding: 4px;
-	font-size: 26px;
+	font-size: 20px;
+	padding: 1px;
+	/* border: solid 1px #666666; */
+	background: #888888;
+	border-bottom-left-radius: 10px; 
+	border-bottom-right-radius: 10px;
 }
 
 .text {
 	padding: 12px;
-	border-radius: 7px;
-	font-size: 20px;
-	border: solid 2px #0000FF;
-	background: #000000;
-	color: #0000FF;
+	/* border: solid 1px #666666; */
+	background: #777777;
+	border: solid 1px #555555;
+	border-radius: 10px;
 }
 
 .footer {
+	background: #000000;
+	font-size: 10px;
 	text-align: center;
-	padding: 4px;
-	font-size: 12px;
 }

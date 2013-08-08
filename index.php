@@ -1,47 +1,62 @@
 <?php
-/* This script is part of CTMB. CTMB is released under the CC BY-NC, and does not include
- * Warranty of any kind. View the Copy of the CC BY-NC license located in the 
- * CTMB archive. CTMB was created by:
- * (c) Chris Dorman, 2012-2013 <cdorm245@gmail.com>
- */
-if (file_exists("config.php"))
+/*
+ * CTMB - Crazy Tiny Message Board - (C) CrazyCoder Productions, 2012-2013
+ * CTMB (Crazy Tiny Message Board) is a simple, flatfile database message
+ * board that is created by Chris Dorman (CrazyCoder Productions), 2012-2013
+ * CTMB is released under the Creative Commons - BY - NC 3.0 NonPorted license
+ * 
+ * Website : http://cdrom.co.nf/cutils.php - Maintained By Chris Dorman
+ * CTMB is released with NO WARRANTY.
+ * 
+ *//
+
+
+include "config.php";
+
+print <<<EOD
+<html>
+	<head>
+		<title>$title</title>
+		<link rel="stylesheet" type="text/css" href="style.css">
+	</head>
+<body>
+	<div class="title">$title</div>
+EOD;
+
+/* Menu List for Login/out, index, and admin panel */
+	print <<<EOD
+	<center><span class="menu"><a href="index.php">Forum Index</a><a href="signup.php">Register</a><a href="index.php?action=userlist">Userlist</a><a href="admin_panel.php">Administration Panel</a></span></center><br>
+EOD;
+
+if (isset($_GET['action']))
 {
-	include "config.php";
-}
-else
-{
-	echo "ERROR: Config error";
-	exit();
+	if ($_GET['action']=="userlist")
+	{
+		$userlist = file_get_contents("db/userlist.txt");
+		echo "<div class=\"text\">";
+		echo $userlist;
+		echo "</div>";
+
+	}
 }
 
-	echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">
-<html>
-<head>
-<title>$title</title>
-<link rel=\"stylesheet\" type=\"text/css\" href=\"$stylesheet\">
-</head>
-<body>
-<div class=\"title\">$title</div>
-<div class=\"desc\">$desc</div>
-<div class=\"text\">";
-	
-	$list = "db/list.txt";
-	$get_list = file_get_contents("db/list.txt", true);
-	if (file_exists("$list"))
-	{
-		echo $get_list;
-	}
-	else
-	{
-		echo "ERROR: Post list not found";
-	}
-	echo "<hr><a href='addpost.php'>New Topic</a>";
-	
-echo "
-</div>
-<div class=\"footer\">&copy; CTMB, 2012-2013 GPLv2+</div>
+/* Show Forum topics */
+if (!isset($_GET['action']))
+{
+print <<<EOD
+<div class="text">
+EOD;
+	$postlist = file_get_contents("db/list.txt");
+	echo $postlist;
+	print <<<EOD
+	<br><hr><a href="topic.php?action=newtopic">New Topic</a></div>
+EOD;
+}
+
+print <<<EOD
+<br><div class="footer">&copy; CTMB - CrazyCoder Productions, 2012-2013</div>
 </body>
 </html>
-";
+EOD;
+
 ?>
-	
