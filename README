@@ -1,0 +1,18 @@
+CTMB - Crazy Tiny Message Board
+
+CTMB is a simple, small, and light message board that uses flatfile format as 
+the database, and as for the posts. CTMB is release under the CC-BY-NC 3.0, and
+does not include ANY KIND OF WARRANTY. CTMB was created by:
+	* Chris Dorman, 2012-2013 <cdorm245@gmail.com>
+	
+Installing CTMB--
+To install CTMB do these steps in order
+1) Extract the CTMB archive to the root directory of your web server.
+2) chmod 755 the db directory, and everything in it.
+3) Edit the Configuration file to your standards (config.php)
+
+After these steps are complete, go to: http://<yourdomain>/ctmb-<version>/
+Here your CTMB will be setup, and ready to use! If you have any trouble, email
+me at <cdorm245@gmail.com>
+
+Thanks, Chris

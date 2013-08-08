@@ -1,0 +1,42 @@
+/* This script is part of CTMB. CTMB is released under the CC BY-NC, and does not include
+ * Warranty of any kind. View the Copy of the CC BY-NC license located in the 
+ * CTMB archive. CTMB was created by:
+ * (c) Chris Dorman, 2012-2013 <cdorm245@gmail.com>
+ */
+
+a:link { color: #D8D8D8; }
+a:visited { color: #D8D8D8; }
+a:hover { color: #0000FF; text-decoration: none; }
+
+body {
+	font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif; 
+	color: #999999;
+	background: #666666;
+}
+
+.title {
+	text-align: center;
+	padding: 4px;
+	font-size: 32px;	
+}
+
+.desc {
+	text-align: center;
+	padding: 4px;
+	font-size: 26px;
+}
+
+.text {
+	padding: 12px;
+	border-radius: 7px;
+	font-size: 20px;
+	border: solid 2px #0000FF;
+	background: #000000;
+	color: #0000FF;
+}
+
+.footer {
+	text-align: center;
+	padding: 4px;
+	font-size: 12px;
+}
