@@ -19,6 +19,11 @@ Thanks, Chris
 
 Change Log
 
+1.59--
+*Added time and date stamps for posts
+*Fixed Redirect bug for new topics
+*Cleaned the code up for topic.php
+
 1.44b--
 *Fixed small typo's
 *Cleaned up code

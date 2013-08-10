@@ -259,14 +259,16 @@ EOD;
 							}
 						}
 						$randomid = rand(1,99999);
+						$date = date("F j, Y");
+						$time = date("g:i a");
 						file_put_contents("db/posts/$randomid.txt", $newcontent);
-						$list = "<li><b><a href=\"topic.php?action=view&id=$randomid\">$topic</a></b> -by $username<br></li>";
+						$list = "<li><b><a href=\"topic.php?action=view&id=$randomid\">$topic</a></b> | Posted by: $username | Posted : $date at $time<br></li>";
 						$list .= file_get_contents('db/list.txt', true);
 						file_put_contents("db/list.txt", $list);
 						print <<<EOD
-						<div class="text">Topic $id post was successful. redirecting in 3 seconds. If redirect fails, <a href="topic.php?action=view&id=$id">Click Here</a></div>
+						<div class="text">Topic $id post was successful. redirecting in 3 seconds. If redirect fails, <a href="topic.php?action=view&id=$randomid">Click Here</a></div>
 EOD;
-						header( "refresh:3;url=topic.php?action=view&id=$id" );
+						header( "refresh:3;url=topic.php?action=view&id=$randomid" );
 					}
 					else
 					{
