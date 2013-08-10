@@ -12,7 +12,7 @@
  */
 
 $title = "CT Message Board"; // Forum title
-$admin_account = "Pentium44"; // Admin User for the forum
+$admin_account = ""; // Admin User for the forum
 $validation = "true"; // Users have to be validated by admin before being able to post or reply (true/false)
 $image_upload_size = "200000"; // Avatar Image Upload Size (In bytes)
 $show_ips = "true"; // Show User's IP on there posts, and replies (true/false)
