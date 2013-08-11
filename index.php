@@ -13,20 +13,7 @@
 
 include "config.php";
 
-print <<<EOD
-<html>
-	<head>
-		<title>$title</title>
-		<link rel="stylesheet" type="text/css" href="themes/$theme/style.css">
-	</head>
-<body>
-	<div class="title">$title</div>
-EOD;
-
-/* Menu List for Login/out, index, and admin panel */
-	print <<<EOD
-	<center><span class="menu"><a href="index.php">Forum Index</a><a href="signup.php">Register</a><a href="index.php?action=userlist">Userlist</a><a href="admin_panel.php">Administration Panel</a><a href="avatar.php">Avatars</a></span></center><br>
-EOD;
+include "themes/$theme/header.php";
 
 if (isset($_GET['action']))
 {
@@ -53,10 +40,6 @@ EOD;
 EOD;
 }
 
-print <<<EOD
-<br><div class="footer">&copy; CTMB - CrazyCoder Productions, 2012-2013</div>
-</body>
-</html>
-EOD;
+include "themes/$theme/footer.php";
 
 ?>

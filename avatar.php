@@ -13,20 +13,7 @@
 
 include "config.php";
 
-print <<<EOD
-<html>
-	<head>
-		<title>$title</title>
-		<link rel="stylesheet" type="text/css" href="themes/$theme/style.css">
-	</head>
-<body>
-	<div class="title">$title</div>
-EOD;
-
-/* Menu List for Login/out, index, and admin panel */
-	print <<<EOD
-	<center><span class="menu"><a href="index.php">Forum Index</a><a href="signup.php">Register</a><a href="index.php?action=userlist">Userlist</a><a href="admin_panel.php">Administration Panel</a><a href="avatar.php">Avatars</a></span></center><br>
-EOD;
+include "themes/$theme/header.php";
 
 if (isset($_GET['action']))
 {
@@ -56,20 +43,22 @@ if (isset($_GET['action']))
 			}
 			else
 			{
-				echo "<div class='text'>Upload: " . $_FILES["file"]["name"] . "<br>";
-				echo "Type: " . $_FILES["file"]["type"] . "<br>";
-				echo "Size: " . ($_FILES["file"]["size"] / 1024) . " kB<br>";
-				echo "Temp file: " . $_FILES["file"]["tmp_name"] . "<br>";
-
-				if (file_exists("db/avatars/" . $_FILES["file"]["name"]))
+				if (file_exists("db/avatars/$username.$extension"))
 				{
-					echo $_FILES["file"]["name"] . " already exists. ";
+					unlink("db/avatars/$username.$extension");
+					move_uploaded_file($_FILES["file"]["tmp_name"],
+					"db/avatars/" . $_FILES["file"]["name"]);
+					rename("db/avatars/" . $_FILES["file"]["name"], "db/avatars/$username.$extension");
+					file_put_contents("db/avatars/$username.txt", "$username.$extension");
+					echo "<div class='text'>Avatar Uploaded, this will be your avatar when you make posts, and topics</div>";
 				}
 				else
 				{
 					move_uploaded_file($_FILES["file"]["tmp_name"],
 					"db/avatars/" . $_FILES["file"]["name"]);
-					echo "Stored in: " . "upload/" . $_FILES["file"]["name"] . "<br></div>";
+					rename("db/avatars/" . $_FILES["file"]["name"], "db/avatars/$username.$extension");
+					file_put_contents("db/avatars/$username.txt", "$username.$extension");
+					echo "<div class='text'>Avatar Uploaded, this will be your avatar when you make posts, and topics</div>";
 				}
 			}
 		}
@@ -99,10 +88,6 @@ enctype="multipart/form-data">
 EOD;
 }
 
-print <<<EOD
-<br><div class="footer">&copy; CTMB - CrazyCoder Productions, 2012-2013</div>
-</body>
-</html>
-EOD;
+include "themes/$theme/footer.php";
 
 ?>

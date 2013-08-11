@@ -11,21 +11,12 @@
  */
 
 include "config.php";
-print <<<EOD
-<html>
-	<head>
-		<title>$title</title>
-		<link rel="stylesheet" type="text/css" href="themes/$theme/style.css">
-	</head>
-<body>
-	<div class="title">$title</div>
-	<div class="board">
-EOD;
 
-/* Menu List for Login/out, index, and admin panel */
-	print <<<EOD
-	<center><span class="menu"><a href="index.php">Forum Index</a><a href="signup.php">Register</a><a href="index.php?action=userlist">Userlist</a><a href="admin_panel.php">Administration Panel</a><a href="avatar.php">Avatars</a></span></center><br>
-EOD;
+include "themes/$theme/header.php";
+
+$date = date("F j, Y");
+$time = date("g:i a");
+$date_string = "$date at $time";
 
 if (isset($_GET['action']))
 {
@@ -43,6 +34,12 @@ if (isset($_GET['action']))
 				$decrypt_pass = base64_decode($userpass);
 				if ($password==$decrypt_pass)
 				{
+					// Mark in log success logging in //
+					$log_file = "db/logs/logins.txt";
+					$log_content_old = file_get_contents($log_file);
+					$log_content_string = "<td>$username</td>\n<td>$date_string</td>\n<td>" . $_SERVER['REMOTE_ADDR'] . "</td>\n<td><font color=\"#00ff00\">Successful</font></td>\n</tr><tr>\n\n";
+					file_put_contents($log_file, $log_content_string . $log_content_old);
+					
 					print <<<EOD
 					<div class="text"><b><h2>Administration Panel</h2></b>
 					<b>Remove User</b><br>
@@ -54,6 +51,13 @@ EOD;
 				}
 				else
 				{
+					// Mark in log error logging in //
+
+					$log_file = "db/logs/logins.txt";
+					$log_content_old = file_get_contents($log_file);
+					$log_content_string = "<td>$username</td>\n<td>$date_string</td>\n<td>" . $_SERVER['REMOTE_ADDR'] . "</td>\n<td><font color=\"red\">Failure</font></td>\n</tr><tr>\n\n";
+					file_put_contents($log_file, $log_content_string . $log_content_old);	
+					
 					print <<<EOD
 					<div class="text">Error: Administrator password incorrect</div>
 EOD;
@@ -61,6 +65,12 @@ EOD;
 			}
 			else if ($method=="Pending Users")
 			{
+				// Mark in log success logging in //
+				$log_file = "db/logs/logins.txt";
+				$log_content_old = file_get_contents($log_file);
+				$log_content_string = "<td>$username</td>\n<td>$date_string</td>\n<td>" . $_SERVER['REMOTE_ADDR'] . "</td>\n<td><font color=\"#00ff00\">Successful</font></td>\n</tr><tr>\n\n";
+				file_put_contents($log_file, $log_content_string . $log_content_old);				
+
 				$password = $_POST['password'];
 				$userpass = file_get_contents("db/users/" . $username);
 				$decrypt_pass = base64_decode($userpass);
@@ -82,9 +92,61 @@ EOD;
 				}
 				else
 				{
+					// Mark in log error logging in //
+
+					$log_file = "db/logs/logins.txt";
+					$log_content_old = file_get_contents($log_file);
+					$log_content_string = "<td>$username</td>\n<td>$date_string</td>\n<td>" . $_SERVER['REMOTE_ADDR'] . "</td>\n<td><font color=\"red\">Failure</font></td>\n</tr><tr>\n\n";
+					file_put_contents($log_file, $log_content_string . $log_content_old);	
+					
 					print <<<EOD
 					<div class="text">Error: Administrator password incorrect</div>
 EOD;
+				}
+			}
+			else if($method=="Logs")
+			{
+				// Mark in log success logging in //
+				$log_file = "db/logs/logins.txt";
+				$log_content_old = file_get_contents($log_file);
+				$log_content_string = "<td>$username</td>\n<td>$date_string</td>\n<td>" . $_SERVER['REMOTE_ADDR'] . "</td>\n<td><font color=\"#00ff00\">Successful</font></td>\n</tr><tr>\n\n";
+				file_put_contents($log_file, $log_content_string . $log_content_old);				
+	
+				$password = $_POST['password'];
+				$userpass = file_get_contents("db/users/" . $username);
+				$decrypt_pass = base64_decode($userpass);
+				if ($password==$decrypt_pass)
+				{
+					$log_posts = file_get_contents("db/logs/posts.txt");
+					$log_topics = file_get_contents("db/logs/topics.txt");
+					$log_logins = file_get_contents("db/logs/logins.txt");
+					// Center Table //
+					echo "<center><div class='text'>";
+					echo "<h2><b>Board Logs</b></h2><br>\n<b>Administrator Logins</b><br>\n<table border='1'><tr>";
+					echo "<td>Username</td>\n<td>Time & Date</td>\n<td>External IP</td>\n<td>Status</td>\n</tr><tr>\n\n";
+					echo $log_logins;
+					echo "</tr></table>";
+					echo "<b>Topic Creations</b><br>\n<table border='1'><tr>";
+					echo "<td>Username</td>\n<td>Topic Name</td>\n<td>Topic ID</td>\n<td>Time & Date</td>\n<td>External IP</td>\n</tr><tr>\n\n";
+					echo $log_topics;
+					echo "</tr></table>";
+					echo "<b>User Posts</b><br>\n<table border='1'><tr>";
+					echo "<td>Username</td>\n<td>Topic ID</td>\n<td>Time & Date</td>\n<td>External IP</td>\n</tr><tr>\n\n";
+					echo $log_posts;
+					echo "</tr></table>";
+					// Close Center //
+					echo "</div></center>";
+				}
+				else
+				{
+					// Mark in log error logging in //
+
+					$log_file = "db/logs/logins.txt";
+					$log_content_old = file_get_contents($log_file);
+					$log_content_string = "<td>$username</td>\n<td>$date_string</td>\n<td>" . $_SERVER['REMOTE_ADDR'] . "</td>\n<td><font color=\"red\">Failure</font></td>\n</tr><tr>\n\n";
+					file_put_contents($log_file, $log_content_string . $log_content_old);
+					
+					echo "<div class='text'>Error: Administrator password incorrect</div>";
 				}
 			}
 			else
@@ -95,7 +157,7 @@ EOD;
 			}
 		}
 		else
-		{
+		{			
 			print <<<EOD
 			<div class="text">Error: User is not marked as administrator</div>
 EOD;
@@ -183,17 +245,13 @@ print <<<EOD
 		Action: <select name="method">
 				<option>Remove User</option>
 				<option>Pending Users</option>
+				<option>Logs</option>
 				</select><br>
 		<input type="submit" value="Login">
 	</div>
 EOD;
 }
 
-print <<<EOD
-</div>
-<br><div class="footer">&copy; CTMB - CrazyCoder Productions, 2012-2013</div>
-</body>
-</html>
-EOD;
+include "themes/$theme/footer.php";
 
 ?>

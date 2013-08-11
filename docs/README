@@ -19,6 +19,13 @@ Thanks, Chris
 
 Change Log
 
+1.76--
+*Added Header/Footer Support
+*Avatar Support for Upload User only (No more global choosing)
+*Updated HTML
+*New Default theme (Less ugly)
+*Logging
+
 1.59--
 *Added time and date stamps for posts
 *Fixed Redirect bug for new topics

@@ -54,6 +54,12 @@ table {
 
 }
 
+/* Timestamp, and date float */
+
+.date_float {
+	float: right;
+}
+
 .board {
 	max-width: 850px;
 	margin: auto;

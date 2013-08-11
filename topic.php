@@ -12,20 +12,8 @@
  */
 
 include "config.php";
-print <<<EOD
-<html>
-	<head>
-		<title>$title</title>
-		<link rel="stylesheet" type="text/css" href="themes/$theme/style.css">
-	</head>
-<body>
-	<div class="title">$title</div>
-EOD;
 
-/* Menu List for Login/out, index, and admin panel */
-	print <<<EOD
-	<center><span class="menu"><a href="index.php">Forum Index</a><a href="signup.php">Register</a><a href="index.php?action=userlist">Userlist</a><a href="admin_panel.php">Administration Panel</a><a href="avatar.php">Avatars</a></span></center><br>
-EOD;
+include "themes/$theme/header.php";
 
 $action = $_GET['action'];
 if (isset($action))
@@ -75,15 +63,6 @@ EOD;
 			<form action="topic.php?action=doreply&id=$id" method="post">
 			Username: <input type="text" name="username"><br>
 			Password: <input type="password" name="password"><br>
-			Avatar:
-EOD;
-				echo "<select name='avatar'>";
-				$avatar_list = array_map("htmlspecialchars", scandir("db/avatars/"));
-				foreach ($avatar_list as $file)
-				echo "<option value='$file'>$file</option>";
-				echo "</select><br>";
-				
-				print <<<EOD
 			<textarea name="text" cols="35" rows="8">Post Body</textarea><br>
 			<input type="submit" value="Submit">
 			</div>
@@ -122,35 +101,38 @@ EOD;
 							$bb = bbcode_format($text2);
 							if ($show_ips=="true")
 							{
-								if ($_POST['avatar']==".")
+								if (file_exists("db/avatars/$username.txt"))
 								{
-									$newcontent = "<tr><td class='userinfo'><b>" . $username . "</b><br><img style='margin: auto; width: 140px;' src='db/avatars/default.jpg'><br>" . $_SERVER['REMOTE_ADDR'] . "</td><td class='userpost'>" . $bb . "</td></tr>"; 								
-								}
-								else if ($_POST['avatar']=="..")
-								{
-									$newcontent = "<tr><td class='userinfo'><b>" . $username . "</b><br><img style='margin: auto; width: 140px;' src='db/avatars/default.jpg'><br>" . $_SERVER['REMOTE_ADDR'] . "</td><td class='userpost'>" . $bb . "</td></tr>"; 								
+									$user_avatar = file_get_contents("db/avatars/$username.txt");
+									$newcontent = "<tr><td class='userinfo'><b>" . $username . "</b><br><img style='margin: auto; width: 140px;' src='db/avatars/$user_avatar'><br>" . $_SERVER['REMOTE_ADDR'] . "</td><td class='userpost'>" . $bb . "</td></tr>"; 								
 								}
 								else
 								{
-									$newcontent = "<tr><td class='userinfo'><b>" . $username . "</b><br><img style='margin: auto; width: 140px;' src='db/avatars/" . $_POST['avatar'] . "'><br>" . $_SERVER['REMOTE_ADDR'] . "</td><td class='userpost'>" . $bb . "</td></tr>"; 	
+									$newcontent = "<tr><td class='userinfo'><b>" . $username . "</b><br><img style='margin: auto; width: 140px;' src='db/avatars/default.jpg'><br>" . $_SERVER['REMOTE_ADDR'] . "</td><td class='userpost'>" . $bb . "</td></tr>"; 	
 								}
 							}
 							else
 							{
-								if ($_POST['avatar']==".")
+								if (file_exists("db/avatars/$username.txt"))
 								{
-									$newcontent = "<tr><td class='userinfo'><b>" . $username . "</b><br><img style='margin: auto; width: 140px;' src='db/avatars/default.jpg'></td><td class='userpost'>" . $bb . "</td></tr>"; 								
-								}
-								else if ($_POST['avatar']=="..")
-								{
-									$newcontent = "<tr><td class='userinfo'><b>" . $username . "</b><br><img style='margin: auto; width: 140px;' src='db/avatars/default.jpg'></td><td class='userpost'>" . $bb . "</td></tr>"; 								
+									$user_avatar = file_get_contents("db/avatars/$username.txt");
+									$newcontent = "<tr><td class='userinfo'><b>" . $username . "</b><br><img style='margin: auto; width: 140px;' src='db/avatars/$user_avatar'></td><td class='userpost'>" . $bb . "</td></tr>"; 								
 								}
 								else
 								{
-									$newcontent = "<tr><td class='userinfo'><b>" . $username . "</b><br><img style='margin: auto; width: 140px;' src='db/avatars/" . $_POST['avatar'] . "'></td><td class='userpost'>" . $bb . "</td></tr>"; 	
+									$newcontent = "<tr><td class='userinfo'><b>" . $username . "</b><br><img style='margin: auto; width: 140px;' src='db/avatars/default.jpg'></td><td class='userpost'>" . $bb . "</td></tr>"; 	
 								}
 							}
 							file_put_contents("db/posts/$id.txt", $getoldcontent . $newcontent);
+							//Add reply to logs
+							
+							$date = date("F j, Y");
+							$time = date("g:i a");
+							$date_string = "$date at $time";
+							$log_posts_string = "<td>$username</td>\n<td>$id</td>\n<td>$date_string</td>\n<td>" . $_SERVER['REMOTE_ADDR'] . "</td>\n</tr><tr>\n\n";
+							$log_posts = "db/logs/posts.txt";
+							$old_log_content = file_get_contents($log_posts);
+							file_put_contents($log_posts, $log_posts_string . $old_log_content);
 							print <<<EOD
 							<div class="text">Your reply to topic id $id was successful. redirecting in 3 seconds. If redirect fails, <a href="topic.php?action=view&id=$id">Click Here</a></div>
 EOD;
@@ -194,15 +176,6 @@ EOD;
 	Username: <input type="text" name="username"><br>
 	Password: <input type="password" name="password"><br>
 	Topic Name: <input type="text" name="topic"><br>
-	Avatar:
-EOD;
-		echo "<select name='avatar'>";
-		$avatar_list = array_map("htmlspecialchars", scandir("db/avatars/"));
-		foreach ($avatar_list as $file)
-		echo "<option value='$file'>$file</option>";
-		echo "</select><br>";
-				
-		print <<<EOD
 	<textarea name="text" cols="35" rows="8">Post Body</textarea><br>
 	<input type="submit" value="Submit">
 	</div>
@@ -230,39 +203,41 @@ EOD;
 						$bb = bbcode_format($text2);
 						if ($show_ips=="true")
 						{
-							if ($_POST['avatar']==".")
+							if (file_exists("db/avatars/$username.txt"))
 							{
-								$newcontent = "<center><h3>$topic</h3></center><tr><td class='userinfo'><b>" . $username . "</b><br><img style='margin: auto; width: 140px;' src='db/avatars/default.jpg'><br>" . $_SERVER['REMOTE_ADDR'] . "</td><td class='userpost'>" . $bb . "</td></tr>"; 								
-							}
-							else if ($_POST['avatar']=="..")
-							{
-								$newcontent = "<center><h3>$topic</h3></center><tr><td class='userinfo'><b>" . $username . "</b><br><img style='margin: auto; width: 140px;' src='db/avatars/default.jpg'><br>" . $_SERVER['REMOTE_ADDR'] . "</td><td class='userpost'>" . $bb . "</td></tr>"; 								
+								$user_avatar = file_get_contents("db/avatars/$username.txt");
+								$newcontent = "<center><h3>$topic</h3></center><tr><td class='userinfo'><b>" . $username . "</b><br><img style='margin: auto; width: 140px;' src='db/avatars/$user_avatar'><br>" . $_SERVER['REMOTE_ADDR'] . "</td><td class='userpost'>" . $bb . "</td></tr>"; 								
 							}
 							else
 							{
-								$newcontent = "<center><h3>$topic</h3></center><tr><td class='userinfo'><b>" . $username . "</b><br><img style='margin: auto; width: 140px;' src='db/avatars/" . $_POST['avatar'] . "'><br>" . $_SERVER['REMOTE_ADDR'] . "</td><td class='userpost'>" . $bb . "</td></tr>"; 	
+								$newcontent = "<center><h3>$topic</h3></center><tr><td class='userinfo'><b>" . $username . "</b><br><img style='margin: auto; width: 140px;' src='db/avatars/default.jpg'><br>" . $_SERVER['REMOTE_ADDR'] . "</td><td class='userpost'>" . $bb . "</td></tr>"; 	
 							}
 						}
 						else
 						{
-							if ($_POST['avatar']==".")
+							if (file_exists("db/avatars/$username.txt"))
 							{
-								$newcontent = "<center><h3>$topic</h3></center><tr><td class='userinfo'><b>" . $username . "</b><br><img style='margin: auto; width: 140px;' src='db/avatars/default.jpg'></td><td class='userpost'>" . $bb . "</td></tr>"; 								
-							}
-							else if ($_POST['avatar']=="..")
-							{
-								$newcontent = "<center><h3>$topic</h3></center><tr><td class='userinfo'><b>" . $username . "</b><br><img style='margin: auto; width: 140px;' src='db/avatars/default.jpg'></td><td class='userpost'>" . $bb . "</td></tr>"; 								
+								$user_avatar = file_get_contents("db/avatars/$username.txt");
+								$newcontent = "<center><h3>$topic</h3></center><tr><td class='userinfo'><b>" . $username . "</b><br><img style='margin: auto; width: 140px;' src='db/avatars/$user_avatar'><br>" . $_SERVER['REMOTE_ADDR'] . "</td><td class='userpost'>" . $bb . "</td></tr>"; 								
 							}
 							else
 							{
-								$newcontent = "<center><h3>$topic</h3></center><tr><td class='userinfo'><b>" . $username . "</b><br><img style='margin: auto; width: 140px;' src='db/avatars/" . $_POST['avatar'] . "'></td><td class='userpost'>" . $bb . "</td></tr>"; 	
+								$newcontent = "<center><h3>$topic</h3></center><tr><td class='userinfo'><b>" . $username . "</b><br><img style='margin: auto; width: 140px;' src='db/avatars/default.jpg'><br>" . $_SERVER['REMOTE_ADDR'] . "</td><td class='userpost'>" . $bb . "</td></tr>"; 	
 							}
 						}
 						$randomid = rand(1,99999);
 						$date = date("F j, Y");
 						$time = date("g:i a");
+						//Add topic creation to logs
+						
+						$date_string = "$date at $time";
+						$log_posts_string = "<td>$username</td>\n<td>$topic</td>\n<td>$randomid</td>\n<td>$date_string</td>\n<td>" . $_SERVER['REMOTE_ADDR'] . "</td>\n</tr><tr>\n\n";
+						$log_posts = "db/logs/topics.txt";
+						$old_log_content = file_get_contents($log_posts);
+						file_put_contents($log_posts, $log_posts_string . $old_log_content);
+						
 						file_put_contents("db/posts/$randomid.txt", $newcontent);
-						$list = "<li><b><a href=\"topic.php?action=view&id=$randomid\">$topic</a></b> | Posted by: $username | Posted : $date at $time<br></li>";
+						$list = "<li><b><a href=\"topic.php?action=view&id=$randomid\">$topic</a></b><div class=\"date_float\">Posted by: $username | Posted : $date at $time</div><br></li>";
 						$list .= file_get_contents('db/list.txt', true);
 						file_put_contents("db/list.txt", $list);
 						print <<<EOD
@@ -300,11 +275,6 @@ EOD;
 	}
 }
 
-
-print <<<EOD
-<br><div class="footer">&copy; CTMB - CrazyCoder Productions, 2012-2013</div>
-</body>
-</html>
-EOD;
+include "themes/$theme/footer.php";
 
 ?>

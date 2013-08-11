@@ -9,6 +9,7 @@
  * 
  */
 @import url(http://fonts.googleapis.com/css?family=Open+Sans:300,400); /* Default font */
+@import url(http://fonts.googleapis.com/css?family=Didact+Gothic); /* For menu links */
 
 body {
 	font-family: "Open Sans", sans-serif;
@@ -18,55 +19,53 @@ body {
 	background-repeat:repeat;
 	background-color: #444444;
 	font-size: 15px;
-	
-  /*Added to .board
-	max-width: 850px;
-	margin: auto;*/ 
+
+	max-width: 800px;
+	margin: auto; 
 }
 
 .title {
-	text-align: center;
+	text-align: left;
 	font-size: 38px;
 	padding: 16px;
-	border: solid 2px #232323;
-	background: #555555;
-	border-radius: 14px;
+	background: #131313;
+	border-bottom: solid 1px #58D3F7;
 }
 
 .menu {
-	text-align: center;
+	float: left;
 	font-size: 20px;
-	padding-top: 1px;
+	padding-top: 0px;
 	padding-left: 3px;
 	padding-right: 3px;
 	padding-bottom: 3px;
 	/* border: solid 1px #666666; */
-	background: #232323;
-	border-bottom-left-radius: 10px; 
-	border-bottom-right-radius: 10px;
+	background: #131313;
+	font-family: "Didact Gothic", "Open Sans", sans-serif;
 }
 
-.menu a:link { color: #ffffff; text-decoration: none; padding: 5px; }
-.menu a:visited { color: #ffffff; text-decoration: none; padding: 5px; }
-.menu a:hover { color: #999999; text-decoration: none; padding: 5px; text-shadow: 0px 0px 2px #58D3F7;}
+.menu a:link { color: #58D3F7; text-decoration: none; padding: 5px; }
+.menu a:visited { color: #58D3F7; text-decoration: none; padding: 5px; }
+.menu a:hover { color: #A9F5F2; text-decoration: none; padding: 5px; }
 
 .text {
 	padding: 12px;
 	/* border: solid 1px #666666; */
-	background: #333333;
+	background: #131313;
 	border: solid 1px #555555;
-	border-radius: 10px;
+	border-radius: 4px;
 	box-shadow: 0px 0px 10px #ffffff;
 }
 
 .text a:link { color: #ffffff; text-decoration: none; padding: 5px; }
 .text a:visited { color: #ffffff; text-decoration: none; padding: 5px; }
-.text a:hover { color: #999999; text-decoration: none; padding: 5px; text-shadow: 0px 0px 3px #ffffff;}
+.text a:hover { color: #999999; text-decoration: none; padding: 5px; text-shadow: 0px 0px 4px #ffffff;}
 
 .footer {
 	background: #000000;
 	font-size: 10px;
 	text-align: center;
+	text-shadow: 0px 0px 4px #ffffff;
 }
 
 .userinfo {
@@ -80,9 +79,15 @@ body {
 	vertical-align: top;
 }
 
+/* Timestamp, and date float */
+
+.date_float {
+	float: right;
+}
+
 /* board div (For width and margin) */
 
 .board {
-	max-width: 850px;
-	margin: auto;
+	/*max-width: 850px;
+	margin: auto;*/
 }

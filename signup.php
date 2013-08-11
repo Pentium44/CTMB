@@ -19,20 +19,7 @@ $password = $_POST['password'];
 $password_again = $_POST['password_again'];
 $email = htmlentities(stripslashes($_POST['email']));
 
-print <<<EOD
-<html>
-	<head>
-		<title>$title</title>
-		<link rel="stylesheet" type="text/css" href="themes/$theme/style.css">
-	</head>
-<body>
-	<div class="title">$title</div>
-EOD;
-
-	print <<<EOD
-	<center><span class="menu"><a href="index.php">Forum Index</a><a href="signup.php">Register</a><a href="index.php?action=userlist">Userlist</a><a href="admin_panel.php">Administration Panel</a><a href="avatar.php">Avatars</a></span></center><br>
-EOD;
-
+include "themes/$theme/header.php";
 
 $action = $_GET['action'];
 if (isset($action))
@@ -108,11 +95,6 @@ if (!isset($action))
 	</div>
 EOD;
 }
-
-print <<<EOD
-<br><div class="footer">&copy; CTMB - CrazyCoder Productions, 2012-2013</div>
-</body>
-</html>
-EOD;
+include "themes/$theme/footer.php";
 
 ?>
