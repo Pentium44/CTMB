@@ -226,7 +226,7 @@ EOD;
 							}
 						}
 						$randomid = rand(1,99999);
-						$date = date("j, n, Y");
+						$date = date("n, j, Y");
 						$date2 = date("F j, Y");
 						$time = date("g:i a");
 						//Add topic creation to logs
