@@ -206,11 +206,11 @@ EOD;
 							if (file_exists("db/avatars/$username.txt"))
 							{
 								$user_avatar = file_get_contents("db/avatars/$username.txt");
-								$newcontent = "<center><h3>$topic</h3></center><tr><td class='userinfo'><b>" . $username . "</b><br><img style='margin: auto; width: 140px;' src='db/avatars/$user_avatar'><br>" . $_SERVER['REMOTE_ADDR'] . "</td><td class='userpost'>" . $bb . "</td></tr>"; 								
+								$newcontent = "<center><h3>$topic</h3></center><tr><td class='userinfo'><b>" . $username . "</b><br>\n<img style='margin: auto; width: 140px;' src='db/avatars/$user_avatar'><br>" . $_SERVER['REMOTE_ADDR'] . "</td><td class='userpost'>" . $bb . "</td></tr>\n"; 								
 							}
 							else
 							{
-								$newcontent = "<center><h3>$topic</h3></center><tr><td class='userinfo'><b>" . $username . "</b><br><img style='margin: auto; width: 140px;' src='db/avatars/default.jpg'><br>" . $_SERVER['REMOTE_ADDR'] . "</td><td class='userpost'>" . $bb . "</td></tr>"; 	
+								$newcontent = "<center><h3>$topic</h3></center><tr><td class='userinfo'><b>" . $username . "</b><br>\n<img style='margin: auto; width: 140px;' src='db/avatars/default.jpg'><br>" . $_SERVER['REMOTE_ADDR'] . "</td><td class='userpost'>" . $bb . "</td></tr>\n"; 	
 							}
 						}
 						else
@@ -218,26 +218,27 @@ EOD;
 							if (file_exists("db/avatars/$username.txt"))
 							{
 								$user_avatar = file_get_contents("db/avatars/$username.txt");
-								$newcontent = "<center><h3>$topic</h3></center><tr><td class='userinfo'><b>" . $username . "</b><br><img style='margin: auto; width: 140px;' src='db/avatars/$user_avatar'><br>" . $_SERVER['REMOTE_ADDR'] . "</td><td class='userpost'>" . $bb . "</td></tr>"; 								
+								$newcontent = "<center><h3>$topic</h3></center><tr><td class='userinfo'><b>" . $username . "</b><br>\n<img style='margin: auto; width: 140px;' src='db/avatars/$user_avatar'></td><td class='userpost'>" . $bb . "</td></tr>\n"; 								
 							}
 							else
 							{
-								$newcontent = "<center><h3>$topic</h3></center><tr><td class='userinfo'><b>" . $username . "</b><br><img style='margin: auto; width: 140px;' src='db/avatars/default.jpg'><br>" . $_SERVER['REMOTE_ADDR'] . "</td><td class='userpost'>" . $bb . "</td></tr>"; 	
+								$newcontent = "<center><h3>$topic</h3></center><tr><td class='userinfo'><b>" . $username . "</b><br>\n<img style='margin: auto; width: 140px;' src='db/avatars/default.jpg'></td><td class='userpost'>" . $bb . "</td></tr>\n"; 	
 							}
 						}
 						$randomid = rand(1,99999);
-						$date = date("F j, Y");
+						$date = date("j, n, Y");
+						$date2 = date("F j, Y");
 						$time = date("g:i a");
 						//Add topic creation to logs
 						
-						$date_string = "$date at $time";
+						$date_string = "$date2 at $time";
 						$log_posts_string = "<td>$username</td>\n<td>$topic</td>\n<td>$randomid</td>\n<td>$date_string</td>\n<td>" . $_SERVER['REMOTE_ADDR'] . "</td>\n</tr><tr>\n\n";
 						$log_posts = "db/logs/topics.txt";
 						$old_log_content = file_get_contents($log_posts);
 						file_put_contents($log_posts, $log_posts_string . $old_log_content);
 						
 						file_put_contents("db/posts/$randomid.txt", $newcontent);
-						$list = "<li><b><a href=\"topic.php?action=view&id=$randomid\">$topic</a></b><div class=\"date_float\">Posted by: $username | Posted : $date at $time</div><br></li>";
+						$list = "<li><b><a href=\"topic.php?action=view&id=$randomid\">$topic</a></b><div class=\"date_float\">Posted by: $username | Posted : $date at $time</div><br></li>\n";
 						$list .= file_get_contents('db/list.txt', true);
 						file_put_contents("db/list.txt", $list);
 						print <<<EOD
