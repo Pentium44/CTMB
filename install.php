@@ -21,6 +21,7 @@ if(!isset($_GET['do']))
 	Board Theme: <select name="theme">
 					<option name="default" value="default">CTMB Default</option>
 					<option name="terminal" value="terminal">Mono Terminal</option>
+					<option name="bright_white" value="bright_white">Bright n' Simple</option>
 				 </select><br>
 	<input type="submit" name="install" value="Install CTMB">
 	</form>
@@ -36,8 +37,7 @@ else
 		$title = $_POST['title'];
 		$username = $_POST['username'];
 		$password = $_POST['password'];
-		$image_upload_size = $_POST['image_upload_size'];
-		$config_string1 = "<?php \$title = \"$title\"; \$admin_color = \"#ff00ff\"; \$user_color = \"#00ff00\"; \$image_upload_size = \"$image_upload_size\"";
+		$config_string1 = "<?php \$title = \"$title\"; \$admin_color = \"#ff00ff\"; \$user_color = \"#00ff00\"; ";
 		if(isset($_POST['validation']))
 		{
 			$config_string2 = "\$validation = \"true\"; ";
@@ -61,9 +61,13 @@ else
 		{
 			$config_string4 = "\$theme = \"default\"; ";
 		}
-		else 
+		else if($theme="terminal")
 		{
 			$config_string4 = "\$theme = \"terminal\"; ";
+		}
+		else
+		{
+			$config_string4 = "\$theme = \"bright_white\"; ";
 		}
 		// Close the php tag //
 		$config_string5 = "?>";
