@@ -37,7 +37,8 @@ else
 		$title = $_POST['title'];
 		$username = $_POST['username'];
 		$password = $_POST['password'];
-		$config_string1 = "<?php \$title = \"$title\"; \$admin_color = \"#ff00ff\"; \$user_color = \"#00ff00\"; ";
+		$image_upload_size = $_POST['image_upload_size'];
+		$config_string1 = "<?php \$title = \"$title\"; \$admin_color = \"#ff00ff\"; \$user_color = \"#00ff00\";  \$image_upload_size = \"$image_upload_size\" ";
 		if(isset($_POST['validation']))
 		{
 			$config_string2 = "\$validation = \"true\"; ";
