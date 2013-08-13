@@ -28,8 +28,7 @@ function bbcode_format($str) {
                 '/\[img\](.*?)\[\/img\]/is',  
                 '/\[mail\=(.*?)\](.*?)\[\/mail\]/is',  
                 '/\[mail\](.*?)\[\/mail\]/is',  
-                '/\[font\=(.*?)\](.*?)\[\/font\]/is',  
-                '/\[size\=(.*?)\](.*?)\[\/size\]/is',  
+                '/\[font\=(.*?)\](.*?)\[\/font\]/is',   
                 '/\[color\=(.*?)\](.*?)\[\/color\]/is',  
                  //added pre class for code presentation  
               '/\[code\](.*?)\[\/code\]/is',  
@@ -48,11 +47,10 @@ function bbcode_format($str) {
                 '<a href="$1" rel="nofollow" title="$1">$1</a>',  
                 '<div style="text-align: $1;">$2</div>',  
 				//added alt attribute for validation  
-                '<img src="$1" alt="$1" />',  
+                '<a href="$1"><img style="margin: auto; width: 515px;" src="$1" alt="$1" /></a>',  
                 '<a href="mailto:$1">$2</a>',  
                 '<a href="mailto:$1">$1</a>',  
-                '<span style="font-family: $1;">$2</span>',  
-                '<span style="font-size: $1;">$2</span>',  
+                '<span style="font-family: $1;">$2</span>',    
                 '<span style="color: $1;">$2</span>',  
 				//added pre class for code presentation  
 				'<p><code class="code">$1</code></p>',  

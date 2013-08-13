@@ -32,6 +32,8 @@ a:hover { color: #666666; text-decoration: none; padding: 5px; }
 	border: solid 1px #555555;
 }
 
+.text_small { font-size: 11px; }
+
 .footer {
 	color: #ffffff;
 	font-size: 10px;

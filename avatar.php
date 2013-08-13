@@ -11,7 +11,14 @@
  */
 
 
-include "config.php";
+if(!file_exists("config.php")) 
+{
+	header("Location: install.php");
+}
+else
+{
+	include "config.php";
+}
 
 include "themes/$theme/header.php";
 
@@ -29,7 +36,10 @@ if (isset($_GET['action']))
 		$temp = explode(".", $_FILES["file"]["name"]);
 		$extension = end($temp);
 		if ((($_FILES["file"]["type"] == "image/gif")
+		|| ($_FILES["file"]["type"] == "image/x-gif")
 		|| ($_FILES["file"]["type"] == "image/jpeg")
+		|| ($_FILES["file"]["type"] == "image/x-jpeg")
+		|| ($_FILES["file"]["type"] == "image/x-jpg")
 		|| ($_FILES["file"]["type"] == "image/jpg")
 		|| ($_FILES["file"]["type"] == "image/pjpeg")
 		|| ($_FILES["file"]["type"] == "image/x-png")
@@ -78,7 +88,7 @@ print <<<EOD
 enctype="multipart/form-data">
 <label for="username">Username:</label>
 <input type="text" name="username" id="username"><br>
-<label for="password">Username:</label>
+<label for="password">Password:</label>
 <input type="password" name="password" id="password"><br>
 <label for="file">Filename:</label>
 <input type="file" name="file" id="file"><br>

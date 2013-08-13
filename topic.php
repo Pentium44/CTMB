@@ -11,7 +11,14 @@
  * 
  */
 
-include "config.php";
+if(!file_exists("config.php")) 
+{
+	header("Location: install.php");
+}
+else
+{
+	include "config.php";
+}
 
 include "themes/$theme/header.php";
 
@@ -60,6 +67,7 @@ EOD;
 				print <<<EOD
 			<div class="text">
 			<h2><b>Reply</b></h2>
+			<a href="index.php?action=help_bbcode">BBCode Help</a><br>
 			<form action="topic.php?action=doreply&id=$id" method="post">
 			Username: <input type="text" name="username"><br>
 			Password: <input type="password" name="password"><br>
@@ -99,16 +107,18 @@ EOD;
 							$text2 = nl2br($text);
 							include "bb.php";
 							$bb = bbcode_format($text2);
+							$get_user_color = file_get_contents("db/users/$username.color");
+							$get_user_logo = file_get_contents("db/users/$username.logo");
 							if ($show_ips=="true")
 							{
 								if (file_exists("db/avatars/$username.txt"))
 								{
 									$user_avatar = file_get_contents("db/avatars/$username.txt");
-									$newcontent = "<tr><td class='userinfo'><b>" . $username . "</b><br><img style='margin: auto; width: 140px;' src='db/avatars/$user_avatar'><br>" . $_SERVER['REMOTE_ADDR'] . "</td><td class='userpost'>" . $bb . "</td></tr>"; 								
+									$newcontent = "\n<tr><td class='userinfo'><b><font color='" . $get_user_color . "'>" . $username . "</font></b>\n<br><div class='text_small'>" . $get_user_logo . "</div>\n<img style='margin: auto; width: 140px;' src='db/avatars/$user_avatar'><br>" . $_SERVER['REMOTE_ADDR'] . "</td><td class='userpost'>" . $bb . "</td></tr>"; 								
 								}
 								else
 								{
-									$newcontent = "<tr><td class='userinfo'><b>" . $username . "</b><br><img style='margin: auto; width: 140px;' src='db/avatars/default.jpg'><br>" . $_SERVER['REMOTE_ADDR'] . "</td><td class='userpost'>" . $bb . "</td></tr>"; 	
+									$newcontent = "\n<tr><td class='userinfo'><b><font color='" . $get_user_color . "'>" . $username . "</font></b>\n<br><div class='text_small'>" . $get_user_logo . "</div>\n<img style='margin: auto; width: 140px;' src='db/avatars/default.jpg'><br>" . $_SERVER['REMOTE_ADDR'] . "</td><td class='userpost'>" . $bb . "</td></tr>"; 	
 								}
 							}
 							else
@@ -116,11 +126,11 @@ EOD;
 								if (file_exists("db/avatars/$username.txt"))
 								{
 									$user_avatar = file_get_contents("db/avatars/$username.txt");
-									$newcontent = "<tr><td class='userinfo'><b>" . $username . "</b><br><img style='margin: auto; width: 140px;' src='db/avatars/$user_avatar'></td><td class='userpost'>" . $bb . "</td></tr>"; 								
+									$newcontent = "\n<tr><td class='userinfo'><b><font color='" . $get_user_color . "'>" . $username . "</font></b><br>\n<div class='text_small'>" . $get_user_logo . "</div>\n<img style='margin: auto; width: 140px;' src='db/avatars/$user_avatar'></td><td class='userpost'>" . $bb . "</td></tr>"; 								
 								}
 								else
 								{
-									$newcontent = "<tr><td class='userinfo'><b>" . $username . "</b><br><img style='margin: auto; width: 140px;' src='db/avatars/default.jpg'></td><td class='userpost'>" . $bb . "</td></tr>"; 	
+									$newcontent = "\n<tr><td class='userinfo'><b><font color='" . $get_user_color . "'>" . $username . "</font></b><br>\n<div class='text_small'>" . $get_user_logo . "</div>\n<img style='margin: auto; width: 140px;' src='db/avatars/default.jpg'></td><td class='userpost'>" . $bb . "</td></tr>"; 	
 								}
 							}
 							file_put_contents("db/posts/$id.txt", $getoldcontent . $newcontent);
@@ -172,6 +182,7 @@ EOD;
 		print <<<EOD
 	<div class="text">
 	<h2><b>Create a New Topic</b></h2>
+	<a href="index.php?action=help_bbcode">BBCode Help</a><br>
 	<form action="topic.php?action=donewtopic" method="post">
 	Username: <input type="text" name="username"><br>
 	Password: <input type="password" name="password"><br>
@@ -201,16 +212,18 @@ EOD;
 						$text2 = nl2br($text);
 						include "bb.php";
 						$bb = bbcode_format($text2);
+						$get_user_color = file_get_contents("db/users/$username.color");
+						$get_user_logo = file_get_contents("db/users/$username.logo");
 						if ($show_ips=="true")
 						{
 							if (file_exists("db/avatars/$username.txt"))
 							{
 								$user_avatar = file_get_contents("db/avatars/$username.txt");
-								$newcontent = "<center><h3>$topic</h3></center><tr><td class='userinfo'><b>" . $username . "</b><br>\n<img style='margin: auto; width: 140px;' src='db/avatars/$user_avatar'><br>" . $_SERVER['REMOTE_ADDR'] . "</td><td class='userpost'>" . $bb . "</td></tr>\n"; 								
+								$newcontent = "\n<center><h3>$topic</h3></center><tr><td class='userinfo'><b><font color='" . $get_user_color . "'>" . $username . "</font></b><br>\n<div class='text_small'>" . $get_user_logo . "</div>\n<img style='margin: auto; width: 140px;' src='db/avatars/$user_avatar'><br>" . $_SERVER['REMOTE_ADDR'] . "</td><td class='userpost'>" . $bb . "</td></tr>\n"; 								
 							}
 							else
 							{
-								$newcontent = "<center><h3>$topic</h3></center><tr><td class='userinfo'><b>" . $username . "</b><br>\n<img style='margin: auto; width: 140px;' src='db/avatars/default.jpg'><br>" . $_SERVER['REMOTE_ADDR'] . "</td><td class='userpost'>" . $bb . "</td></tr>\n"; 	
+								$newcontent = "\n<center><h3>$topic</h3></center><tr><td class='userinfo'><b><font color='" . $get_user_color . "'>" . $username . "</font></b><br>\n<div class='text_small'>" . $get_user_logo . "</div>\n<img style='margin: auto; width: 140px;' src='db/avatars/default.jpg'><br>" . $_SERVER['REMOTE_ADDR'] . "</td><td class='userpost'>" . $bb . "</td></tr>\n"; 	
 							}
 						}
 						else
@@ -218,11 +231,11 @@ EOD;
 							if (file_exists("db/avatars/$username.txt"))
 							{
 								$user_avatar = file_get_contents("db/avatars/$username.txt");
-								$newcontent = "<center><h3>$topic</h3></center><tr><td class='userinfo'><b>" . $username . "</b><br>\n<img style='margin: auto; width: 140px;' src='db/avatars/$user_avatar'></td><td class='userpost'>" . $bb . "</td></tr>\n"; 								
+								$newcontent = "\n<center><h3>$topic</h3></center><tr><td class='userinfo'><b><font color='" . $get_user_color . "'>" . $username . "</font></b><br>\n<div class='text_small'>" . $get_user_logo . "</div>\n<img style='margin: auto; width: 140px;' src='db/avatars/$user_avatar'></td><td class='userpost'>" . $bb . "</td></tr>\n"; 								
 							}
 							else
 							{
-								$newcontent = "<center><h3>$topic</h3></center><tr><td class='userinfo'><b>" . $username . "</b><br>\n<img style='margin: auto; width: 140px;' src='db/avatars/default.jpg'></td><td class='userpost'>" . $bb . "</td></tr>\n"; 	
+								$newcontent = "\n<center><h3>$topic</h3></center><tr><td class='userinfo'><b><font color='" . $get_user_color . "'>" . $username . "</font></b><br>\n<div class='text_small'>" . $get_user_logo . "</div>\n<img style='margin: auto; width: 140px;' src='db/avatars/default.jpg'></td><td class='userpost'>" . $bb . "</td></tr>\n"; 	
 							}
 						}
 						$randomid = rand(1,99999);

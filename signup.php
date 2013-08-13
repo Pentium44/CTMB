@@ -11,7 +11,14 @@
  * 
  */
 
-include "config.php";
+if(!file_exists("config.php")) 
+{
+	header("Location: install.php");
+}
+else
+{
+	include "config.php";
+}
 
 $user = $_SESSION['user'];
 $username = htmlentities(stripslashes($_POST['username']));
@@ -58,6 +65,9 @@ if (isset($action))
 							{
 								file_put_contents("db/pendingusers.txt", $username . "<br>");
 							}
+							file_put_contents("db/users/$username.status", "user");
+							file_put_contents("db/users/$username.color", $user_color);
+							file_put_contents("db/users/$username.logo", "Board User");
 							$encrypt_pass = base64_encode($password);
 							file_put_contents("db/users/" . $username, $encrypt_pass);
 							$old_users = file_get_contents("db/userlist.txt");
