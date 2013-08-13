@@ -88,7 +88,7 @@ print <<<EOD
 enctype="multipart/form-data">
 <label for="username">Username:</label>
 <input type="text" name="username" id="username"><br>
-<label for="password">Username:</label>
+<label for="password">Password:</label>
 <input type="password" name="password" id="password"><br>
 <label for="file">Filename:</label>
 <input type="file" name="file" id="file"><br>

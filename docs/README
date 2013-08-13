@@ -8,8 +8,8 @@ does not include ANY KIND OF WARRANTY. CTMB was created by:
 Installing CTMB--
 To install CTMB do these steps in order
 1) Extract the CTMB archive to the root directory of your web server.
-2) chmod 755 the db directory, and everything in it.
-3) Edit the Configuration file to your standards (config.php)
+2) chmod 777 the db directory, and everything in it.
+3) Visit the board using a web browser and complete the install form. 
 
 After these steps are complete, go to: http://<yourdomain>/ctmb-<version>/
 Here your CTMB will be setup, and ready to use! If you have any trouble, email
@@ -18,6 +18,16 @@ me at <cdorm245@gmail.com>
 Thanks, Chris
 
 Change Log
+
+1.99--
+*Added multi admin support
+*User logo, and name colors (based on user rank)
+*Fixed admin panel exploit
+*Added Key for user name colors
+*Added bbcode help page
+*Added install script (easier, and faster)
+*Added BBCode Image Thumbnail (Auto margin, and width)
+*Fixed Typo on Avatar Upload 
 
 1.76--
 *Added Header/Footer Support
