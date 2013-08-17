@@ -1,4 +1,7 @@
 <?php
+// Start session //
+//session_start();
+
 /*
  * CTMB - Crazy Tiny Message Board - (C) CrazyCoder Productions, 2012-2013
  * CTMB (Crazy Tiny Message Board) is a simple, flatfile database message
@@ -52,6 +55,62 @@ if (isset($_GET['action']))
 		
 EOD;
 		echo "</div>";
+	}
+	
+	if($_GET['action']=="login")
+	{
+		print <<<EOD
+		<div class="text">
+		<form action="index.php?action=dologin" method="post">
+		Username: <input type="text" name="username" id="username"><br>
+		Password: <input type="password" name="password" id="password"><br>
+		<input type="submit" name="login" value="Login">
+		</form>
+		</div>
+EOD;
+	}
+	
+	if($_GET['action']=="logout")
+	{
+		if(isset($_SESSION['ctmb-login-user']) && isset($_SESSION['ctmb-login-pass']))
+		{
+			$_SESSION['ctmb-login-user'] = null;
+			$_SESSION['ctmb-login-pass'] = null;
+			header("Location: index.php");
+		}
+		else
+		{
+			echo "<div class='text'>Error: You are not logged in as a user</div>";
+		}
+	}
+	
+	if($_GET['action']=="dologin")
+	{
+		if($_POST['username']!="" && $_POST['password']!="" && isset($_POST['login']))
+		{
+			if(file_exists("db/users/" . $_POST['username'] . ".php"))
+			{
+				include "db/users/" . $_POST['username'] . ".php";
+				if($_POST['password']==$userpass)
+				{
+					$_SESSION['ctmb-login-user'] = $_POST['username'];
+					$_SESSION['ctmb-login-pass'] = $_POST['password'];
+					header("Location: index.php");
+				}
+				else 
+				{ 
+					echo "<div class='text'>Error: Wrong password</div>"; 
+				}
+			}
+			else
+			{
+				echo "<div class='text'>Error: User does not exist</div>";
+			}
+		}
+		else
+		{
+			echo "<div class='text'>Error: login form is not completely filled out</div>";
+		}
 	}
 }
 

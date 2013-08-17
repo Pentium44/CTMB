@@ -20,18 +20,16 @@ else
 	include "config.php";
 }
 
-$user = $_SESSION['user'];
 $username = htmlentities(stripslashes($_POST['username']));
 $password = $_POST['password'];
 $password_again = $_POST['password_again'];
-$email = htmlentities(stripslashes($_POST['email']));
 
 include "themes/$theme/header.php";
 
 $action = $_GET['action'];
 if (isset($action))
 {
-	if ($action=="go")
+	if ($action=="doregister")
 	{
 		if (isset($username) && isset($password) && isset($password_again))
 		{
@@ -65,16 +63,18 @@ if (isset($action))
 							{
 								file_put_contents("db/pendingusers.txt", $username . "<br>");
 							}
+							
+							if(file_exists("db/users/$username.php")) { echo "<div class='text'>Error: User Exists!</div>"; } else {
 							file_put_contents("db/users/$username.status", "user");
 							file_put_contents("db/users/$username.color", $user_color);
 							file_put_contents("db/users/$username.logo", "Board User");
-							$encrypt_pass = base64_encode($password);
-							file_put_contents("db/users/" . $username, $encrypt_pass);
+							$pass_string = "<?php \$userpass = \"$password\" ?>";
+							file_put_contents("db/users/" . $username . ".php", $pass_string);
 							$old_users = file_get_contents("db/userlist.txt");
 							$user = "<b>$username</b><br>";
 							file_put_contents("db/userlist.txt", $user . $old_users);
 							echo "<div class=\"text\">Your account has been created. You can now login.</div>";
-
+							}
 						}
 						else
 						{
@@ -86,6 +86,19 @@ if (isset($action))
 			}
 		}
 	}
+	else if($action=="register")
+	{
+		print <<<EOD
+	<div class="text">
+	<h2><b>Create An Account</b></h2><br>
+	<form action='user.php?action=doregister' method='post'>
+	Username: <input type='text' name='username'><br>
+	Password: <input type='password' name='password'><br>
+	Password Again: <input type="password" name="password_again"><br>
+	<input type='submit' value='Create Account' name="enter" id="enter">
+	</div>
+EOD;
+	}
 	else 
 	{
 		echo "Error: Action not found!";
@@ -94,17 +107,9 @@ if (isset($action))
 
 if (!isset($action))
 {
-	print <<<EOD
-	<div class="text">
-	<h2><b>Create An Account</b></h2><br>
-	<form action='signup.php?action=go' method='post'>
-	Username: <input type='text' name='username'><br>
-	Password: <input type='password' name='password'><br>
-	Password Again: <input type="password" name="password_again"><br>
-	<input type='submit' value='Create Account' name="enter" id="enter">
-	</div>
-EOD;
+	header("Location: index.php");
 }
+
 include "themes/$theme/footer.php";
 
 ?>

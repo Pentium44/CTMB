@@ -38,7 +38,7 @@ else
 		$username = $_POST['username'];
 		$password = $_POST['password'];
 		$image_upload_size = $_POST['image_upload_size'];
-		$config_string1 = "<?php \$title = \"$title\"; \$admin_color = \"#ff00ff\"; \$user_color = \"#00ff00\";  \$image_upload_size = \"$image_upload_size\" ";
+		$config_string1 = "<?php \$title = \"$title\"; \$admin_color = \"#ff00ff\"; \$user_color = \"#00ff00\";  \$image_upload_size = \"$image_upload_size\"; ";
 		if(isset($_POST['validation']))
 		{
 			$config_string2 = "\$validation = \"true\"; ";
@@ -79,8 +79,7 @@ else
 		file_put_contents("db/users/$username.status", "admin");
 		file_put_contents("db/users/$username.color", "#ff0000");
 		file_put_contents("db/users/$username.logo", "Board Owner");
-		$encrypt_pass = base64_encode($password);
-		file_put_contents("db/users/" . $username, $encrypt_pass);
+		file_put_contents("db/users/" . $username . ".php", "<?php \$userpass = \"$password\"; ?>");
 		$old_users = file_get_contents("db/userlist.txt");
 		$user = "<b>$username</b><br>";
 		file_put_contents("db/userlist.txt", $user . $old_users);

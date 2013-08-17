@@ -9,6 +9,7 @@
  * CTMB is released with NO WARRANTY.
  * 
  */
+session_start();
 
 if(!file_exists("config.php")) 
 {
@@ -24,127 +25,112 @@ include "themes/$theme/header.php";
 $date = date("F j, Y");
 $time = date("g:i a");
 $date_string = "$date at $time";
-
+if(isset($_SESSION['ctmb-login-user']) && isset($_SESSION['ctmb-login-pass']))
+{
+	if(file_exists("db/users/" . $_SESSION['ctmb-login-user'] . ".php"))
+	{
+		include "db/users/" . $_SESSION['ctmb-login-user'] . ".php";
+		if($_SESSION['ctmb-login-pass']==$userpass)
+		{
+			$user_status = file_get_contents("db/users/" . $_SESSION['ctmb-login-user'] . ".status");
+			if($user_status=="admin")
+			{
 if (isset($_GET['action']))
 {
 	$action = $_GET['action'];
-	$username = $_POST['username'];
-	if ($action=="login")
+	$username = $_SESSION['ctmb-login-user'];
+	if ($action=="panel")
 	{
-		$password = $_POST['password'];
-		$userpass = file_get_contents("db/users/" . $username);
-		$decrypt_pass = base64_decode($userpass);
-		$user_status = file_get_contents("db/users/$username.status");
-		if ($user_status!="admin")
+		$method = $_GET['method'];
+		if ($method=="rmuser")
 		{
+			// Mark in log success logging in //
 			$log_file = "db/logs/logins.txt";
 			$log_content_old = file_get_contents($log_file);
-			$log_content_string = "<td>$username</td>\n<td>$date_string</td>\n<td>" . $_SERVER['REMOTE_ADDR'] . "</td>\n<td><font color=\"red\">Failure</font></td>\n</tr><tr>\n\n";
-			file_put_contents($log_file, $log_content_string . $log_content_old);	
-			echo "<div class=\"text\">Error: This user is not marked as a moderator, or administrator</div>";
+			$log_content_string = "<td>$username</td>\n<td>$date_string</td>\n<td>" . $_SERVER['REMOTE_ADDR'] . "</td>\n<td><font color=\"#00ff00\">Successful</font></td>\n</tr><tr>\n\n";
+			file_put_contents($log_file, $log_content_string . $log_content_old);
+				
+			print <<<EOD
+			<div class="text"><b><h2>Administration Panel</h2></b>
+			<b>Remove User</b><br>
+			<form action="admin_panel.php?action=rmuser" method="post">
+			Username: <input type="text" name="username"><br>
+			<input type="submit" value="Remove User" name="remove_user" id="remove_user">
+			</div>	
+EOD;
 		}
-		else if($password!=$decrypt_pass)
+		else if ($method=="puser")
 		{
+			// Mark in log success logging in //
 			$log_file = "db/logs/logins.txt";
 			$log_content_old = file_get_contents($log_file);
-			$log_content_string = "<td>$username</td>\n<td>$date_string</td>\n<td>" . $_SERVER['REMOTE_ADDR'] . "</td>\n<td><font color=\"red\">Failure</font></td>\n</tr><tr>\n\n";
-			file_put_contents($log_file, $log_content_string . $log_content_old);	
-			echo "<div class=\"text\">Error: Wrong Password!!</div>";
+			$log_content_string = "<td>$username</td>\n<td>$date_string</td>\n<td>" . $_SERVER['REMOTE_ADDR'] . "</td>\n<td><font color=\"#00ff00\">Successful</font></td>\n</tr><tr>\n\n";
+			file_put_contents($log_file, $log_content_string . $log_content_old);				
+
+			$pendingusers = file_get_contents("db/pendingusers.txt");
+			print <<<EOD
+			<div class="text"><b><h2>Pending Users</h2></b>
+EOD;
+			echo $pendingusers;
+			print <<<EOD
+			<br>
+			<form action="admin_panel.php?action=validate_user" method="post">
+			Username: <input type="text" name="username"><br>
+			Action (Check box to accept user): <input type="checkbox" name="valid_action" value="accept">Accept<br>
+			<input type="submit" value="Validate User" name="validate_user" id="validate_user">
+			</div>	
+EOD;
+		}
+		else if($method=="logs")
+		{
+			// Mark in log success logging in //
+			$log_file = "db/logs/logins.txt";
+			$log_content_old = file_get_contents($log_file);
+			$log_content_string = "<td>$username</td>\n<td>$date_string</td>\n<td>" . $_SERVER['REMOTE_ADDR'] . "</td>\n<td><font color=\"#00ff00\">Successful</font></td>\n</tr><tr>\n\n";
+			file_put_contents($log_file, $log_content_string . $log_content_old);				
+			$log_posts = file_get_contents("db/logs/posts.txt");
+			$log_topics = file_get_contents("db/logs/topics.txt");
+			$log_logins = file_get_contents("db/logs/logins.txt");
+			// Center Table //
+			echo "<center><div class='text'>";
+			echo "<h2><b>Board Logs</b></h2><br>\n<b>Administrator Logins</b><br>\n<table border='1'><tr>";
+			echo "<td>Username</td>\n<td>Time & Date</td>\n<td>External IP</td>\n<td>Status</td>\n</tr><tr>\n\n";
+			echo $log_logins;
+			echo "</tr></table>";
+			echo "<b>Topic Creations</b><br>\n<table border='1'><tr>";
+			echo "<td>Username</td>\n<td>Topic Name</td>\n<td>Topic ID</td>\n<td>Time & Date</td>\n<td>External IP</td>\n</tr><tr>\n\n";
+			echo $log_topics;
+			echo "</tr></table>";
+			echo "<b>User Posts</b><br>\n<table border='1'><tr>";
+			echo "<td>Username</td>\n<td>Topic ID</td>\n<td>Time & Date</td>\n<td>External IP</td>\n</tr><tr>\n\n";
+			echo $log_posts;
+			echo "</tr></table>";
+			// Close Center //
+			echo "</div></center>";
+				
+		}
+		else if($method=="admin_user")
+		{
+			// Mark in log success logging in //
+			$log_file = "db/logs/logins.txt";
+			$log_content_old = file_get_contents($log_file);
+			$log_content_string = "<td>$username</td>\n<td>$date_string</td>\n<td>" . $_SERVER['REMOTE_ADDR'] . "</td>\n<td><font color=\"#00ff00\">Successful</font></td>\n</tr><tr>\n\n";
+			file_put_contents($log_file, $log_content_string . $log_content_old);
+				
+			print <<<EOD
+			<div class="text"><b><h2>Administration Panel</h2></b>
+			<b>Remove User</b><br>
+			<form action="admin_panel.php?action=admin_user" method="post">
+			Username in which you want to Administrate: <input type="text" name="username"><br>
+			<input type="submit" value="Administrate User" name="admin_user" id="admin_user">
+			</div>	
+EOD;
 		}
 		else
 		{
-			$method = $_POST['method'];
-			if ($method=="Remove User")
-			{
-				// Mark in log success logging in //
-				$log_file = "db/logs/logins.txt";
-				$log_content_old = file_get_contents($log_file);
-				$log_content_string = "<td>$username</td>\n<td>$date_string</td>\n<td>" . $_SERVER['REMOTE_ADDR'] . "</td>\n<td><font color=\"#00ff00\">Successful</font></td>\n</tr><tr>\n\n";
-				file_put_contents($log_file, $log_content_string . $log_content_old);
-					
-				print <<<EOD
-				<div class="text"><b><h2>Administration Panel</h2></b>
-				<b>Remove User</b><br>
-				<form action="admin_panel.php?action=rmuser" method="post">
-				Username: <input type="text" name="username"><br>
-				<input type="submit" value="Remove User" name="remove_user" id="remove_user">
-				</div>	
+			print <<<EOD
+			<div class="text">Error: Unknown method</div>
 EOD;
-			}
-			else if ($method=="Pending Users")
-			{
-				// Mark in log success logging in //
-				$log_file = "db/logs/logins.txt";
-				$log_content_old = file_get_contents($log_file);
-				$log_content_string = "<td>$username</td>\n<td>$date_string</td>\n<td>" . $_SERVER['REMOTE_ADDR'] . "</td>\n<td><font color=\"#00ff00\">Successful</font></td>\n</tr><tr>\n\n";
-				file_put_contents($log_file, $log_content_string . $log_content_old);				
-
-				$pendingusers = file_get_contents("db/pendingusers.txt");
-				print <<<EOD
-				<div class="text"><b><h2>Pending Users</h2></b>
-EOD;
-				echo $pendingusers;
-				print <<<EOD
-				<br>
-				<form action="admin_panel.php?action=validate_user" method="post">
-				Username: <input type="text" name="username"><br>
-				Action (Check box to accept user): <input type="checkbox" name="valid_action" value="accept">Accept<br>
-				<input type="submit" value="Validate User" name="validate_user" id="validate_user">
-				</div>	
-EOD;
-			}
-			else if($method=="Logs")
-			{
-				// Mark in log success logging in //
-				$log_file = "db/logs/logins.txt";
-				$log_content_old = file_get_contents($log_file);
-				$log_content_string = "<td>$username</td>\n<td>$date_string</td>\n<td>" . $_SERVER['REMOTE_ADDR'] . "</td>\n<td><font color=\"#00ff00\">Successful</font></td>\n</tr><tr>\n\n";
-				file_put_contents($log_file, $log_content_string . $log_content_old);				
-	
-				$log_posts = file_get_contents("db/logs/posts.txt");
-				$log_topics = file_get_contents("db/logs/topics.txt");
-				$log_logins = file_get_contents("db/logs/logins.txt");
-				// Center Table //
-				echo "<center><div class='text'>";
-				echo "<h2><b>Board Logs</b></h2><br>\n<b>Administrator Logins</b><br>\n<table border='1'><tr>";
-				echo "<td>Username</td>\n<td>Time & Date</td>\n<td>External IP</td>\n<td>Status</td>\n</tr><tr>\n\n";
-				echo $log_logins;
-				echo "</tr></table>";
-				echo "<b>Topic Creations</b><br>\n<table border='1'><tr>";
-				echo "<td>Username</td>\n<td>Topic Name</td>\n<td>Topic ID</td>\n<td>Time & Date</td>\n<td>External IP</td>\n</tr><tr>\n\n";
-				echo $log_topics;
-				echo "</tr></table>";
-				echo "<b>User Posts</b><br>\n<table border='1'><tr>";
-				echo "<td>Username</td>\n<td>Topic ID</td>\n<td>Time & Date</td>\n<td>External IP</td>\n</tr><tr>\n\n";
-				echo $log_posts;
-				echo "</tr></table>";
-				// Close Center //
-				echo "</div></center>";
-				
-			}
-			else if($method=="Administrate User")
-			{
-				// Mark in log success logging in //
-				$log_file = "db/logs/logins.txt";
-				$log_content_old = file_get_contents($log_file);
-				$log_content_string = "<td>$username</td>\n<td>$date_string</td>\n<td>" . $_SERVER['REMOTE_ADDR'] . "</td>\n<td><font color=\"#00ff00\">Successful</font></td>\n</tr><tr>\n\n";
-				file_put_contents($log_file, $log_content_string . $log_content_old);
-					
-				print <<<EOD
-				<div class="text"><b><h2>Administration Panel</h2></b>
-				<b>Remove User</b><br>
-				<form action="admin_panel.php?action=admin_user" method="post">
-				Username in which you want to Administrate: <input type="text" name="username"><br>
-				<input type="submit" value="Administrate User" name="admin_user" id="admin_user">
-				</div>	
-EOD;
-			}
-			else
-			{
-				print <<<EOD
-				<div class="text">Error: Unknown method</div>
-EOD;
-			}
 		}
 	}
 	
@@ -172,105 +158,103 @@ EOD;
 	
 	if ($action=="validate_user")
 	{
-		if (isset($_POST['username']))
+		if ($_POST['username']!="")
 		{
-			if ($_POST['username']!="")
+			if (file_exists("db/users/" . $_POST['username'] . ".php"))
 			{
-				if (file_exists("db/users/" . $_POST['username']))
+				$username = $_POST['username'];
+				$pendinguserslist = file_get_contents("db/pendingusers.txt");
+				$remove_user = str_replace($_POST['username'] . "<br>", "", $pendinguserslist);
+				if (!isset($_POST['valid_action']))
 				{
-					$username = $_POST['username'];
-					$pendinguserslist = file_get_contents("db/pendingusers.txt");
-					$remove_user = str_replace($_POST['username'] . "<br>", "", $pendinguserslist);
-					if (!isset($_POST['valid_action']))
-					{
-						file_put_contents("db/users/" . $_POST['username'] . ".validation", "invalid");
-						file_put_contents("db/pendingusers.txt", $remove_user);
-						echo "<div class=\"text\">$username declined</div>";
-					}
-					if (isset($_POST['valid_action']))
-					{
-						file_put_contents("db/users/" . $_POST['username'] . ".validation", "valid");
-						file_put_contents("db/pendingusers.txt", $remove_user);
-						print <<<EOD
-						<div class="text">$username validated</div>
-EOD;
-					}
+					file_put_contents("db/users/" . $_POST['username'] . ".validation", "invalid");
+					file_put_contents("db/pendingusers.txt", $remove_user);
+					echo "<div class=\"text\">$username declined</div>";
 				}
-				else
+				if (isset($_POST['valid_action']))
 				{
+					file_put_contents("db/users/" . $_POST['username'] . ".validation", "valid");
+					file_put_contents("db/pendingusers.txt", $remove_user);
 					print <<<EOD
-					<div class="text">Error: User was not found</div>
+					<div class="text">$username validated</div>
 EOD;
 				}
 			}
 			else
 			{
 				print <<<EOD
-				<div class="text">Error: No username specified</div>
+				<div class="text">Error: User was not found</div>
 EOD;
 			}
 		}
 		else
 		{
 			print <<<EOD
-			<div class="text">Error: Someone is trying to validate themselves!</div>
+			<div class="text">Error: No username specified</div>
 EOD;
 		}
 	}
 	
 	if($action=="admin_user")
 	{
-		if (isset($_POST['username']) && isset($_POST['admin_user']))
+		if ($_POST['username']!="")
 		{
-			if ($_POST['username']!="")
+			if (file_exists("db/users/" . $_POST['username'] . ".php"))
 			{
-				if (file_exists("db/users/" . $_POST['username']))
-				{
-					$username = $_POST['username'];
-					file_put_contents("db/users/$username.status", "admin");
-					file_put_contents("db/users/$username.logo", "Board Administrator");
-					file_put_contents("db/users/$username.color", $admin_color);
-					echo "<div class=\"text\">$username set as administrator</div>";
-				}
-				else
-				{
-					print <<<EOD
-					<div class="text">Error: User was not found</div>
-EOD;
-				}
+				$username = $_POST['username'];
+				file_put_contents("db/users/$username.status", "admin");
+				file_put_contents("db/users/$username.logo", "Board Administrator");
+				file_put_contents("db/users/$username.color", $admin_color);
+				echo "<div class=\"text\">$username set as administrator</div>";
 			}
 			else
 			{
 				print <<<EOD
-				<div class="text">Error: No username specified</div>
+				<div class="text">Error: User was not found</div>
 EOD;
 			}
 		}
 		else
 		{
 			print <<<EOD
-			<div class="text">Error: Someone is trying to validate themselves!</div>
+			<div class="text">Error: No username specified</div>
 EOD;
 		}
 	}
 }
+	
 
 if (!isset($action))
 {
 print <<<EOD
-	<div class="text"><h2><b>Administration Panel</b></h2>
-		<form action="admin_panel.php?action=login" method="post">
-		Admin Username: <input type="text" name="username"><br>
-		Admin Password: <input type="password" name="password"><br>
-		Action: <select name="method">
-				<option>Remove User</option>
-				<option>Pending Users</option>
-				<option>Logs</option>
-				<option>Administrate User</option>
-				</select><br>
-		<input type="submit" value="Login">
+	<div class="text">
+		<h2><b>Administrator Panel</b></h2>
+		<a href="admin_panel.php?action=panel&method=rmuser">Remove a User</a><br>
+		<a href="admin_panel.php?action=panel&method=puser">Pending Users</a><br>
+		<a href="admin_panel.php?action=panel&method=logs">Board Logs</a><br>
+		<a href="admin_panel.php?action=panel&method=admin_user">Administrate a User</a><br>
 	</div>
 EOD;
+}
+			}
+			else
+			{
+				echo "<div class='text'>Error: You are not an administrator</div>";
+			}
+		}
+		else
+		{
+			echo "<div class='text'>Error: The password that is set does not seem to match the user you are logged in as.</div>";
+		}
+	}
+	else
+	{
+		echo "<div class='text'>Error: This user that is set in your browser cache does not exist</div>";
+	}
+}
+else
+{
+	echo "<div class='text'>Error: You must be logged in</div>";
 }
 
 include "themes/$theme/footer.php";

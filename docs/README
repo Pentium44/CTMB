@@ -19,6 +19,11 @@ Thanks, Chris
 
 Change Log
 
+2.10--
+*Added Sessions (Logging in, and out)
+*Fixed Admin Panel Exploits
+*Fixed Bug that allowed multiple users to be created
+
 1.99--
 *Added multi admin support
 *User logo, and name colors (based on user rank)
