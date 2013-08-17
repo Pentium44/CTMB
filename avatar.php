@@ -88,10 +88,6 @@ if(isset($_SESSION['ctmb-login-user']) && isset($_SESSION['ctmb-login-pass']))
 <div class="text">
 <form action="avatar.php?action=upload" method="post"
 enctype="multipart/form-data">
-<label for="username">Username:</label>
-<input type="text" name="username" id="username"><br>
-<label for="password">Password:</label>
-<input type="password" name="password" id="password"><br>
 <label for="file">Filename:</label>
 <input type="file" name="file" id="file"><br>
 <input type="submit" name="submit" value="Upload">

@@ -22,6 +22,7 @@ if(!isset($_GET['do']))
 					<option name="default" value="default">CTMB Default</option>
 					<option name="terminal" value="terminal">Mono Terminal</option>
 					<option name="bright_white" value="bright_white">Bright n' Simple</option>
+					<option name="gothic-purple" value="gothic-purple">Gothic</option>
 				 </select><br>
 	<input type="submit" name="install" value="Install CTMB">
 	</form>
@@ -62,9 +63,13 @@ else
 		{
 			$config_string4 = "\$theme = \"default\"; ";
 		}
-		else if($theme="terminal")
+		else if($theme=="terminal")
 		{
 			$config_string4 = "\$theme = \"terminal\"; ";
+		}
+		else if($theme=="gothic-purple")
+		{
+			$config_string4 = "\$theme = \"gothic-purple\"; ";
 		}
 		else
 		{
