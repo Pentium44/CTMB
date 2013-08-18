@@ -148,6 +148,14 @@ EOD;
 	<a href="index.php?action=help_bbcode">BBCode Help</a><br>
 	<form action="topic.php?action=donewtopic" method="post">
 	Topic Name: <input type="text" name="topic"><br>
+EOD;
+		$user_status = file_get_contents("db/users/" . $_SESSION['ctmb-login-user'] . ".status");
+		if($user_status=="admin")
+		{
+			echo "Sticky: <input type=\"checkbox\" name=\"sticky\" id=\"sticky\"><br>";
+		}
+
+		print <<<EOD
 	<textarea name="text" cols="35" rows="8">Post Body</textarea><br>
 	<input type="submit" value="Submit">
 	</div>
@@ -208,8 +216,17 @@ EOD;
 					
 					file_put_contents("db/posts/$randomid.txt", $newcontent);
 					$list = "<li><b><a href=\"view.php?tid=$randomid\">$topic</a></b><div class=\"date_float\">Posted by: $username | Posted : $date at $time</div><br></li>\n";
-					$list .= file_get_contents('db/list.txt', true);
-					file_put_contents("db/list.txt", $list);
+					$list .= file_get_contents('db/list.txt');
+					$list_sticky = "<li><b><img style=\"float:left;\" src=\"data/sticky.png\"><a href=\"view.php?tid=$randomid\">$topic</a></b><div class=\"date_float\">Posted by: $username | Posted : $date at $time</div><br></li>\n";
+					$list_sticky .= file_get_contents('db/st_list.txt');
+					if(!isset($_POST['sticky']))
+					{
+						file_put_contents("db/list.txt", $list);
+					}
+					else
+					{
+						file_put_contents("db/st_list.txt", $list_sticky);
+					}
 					print <<<EOD
 					<div class="text">Topic $id post was successful. redirecting in 3 seconds. If redirect fails, <a href="view.php?tid=$randomid">Click Here</a></div>
 EOD;

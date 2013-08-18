@@ -120,7 +120,9 @@ if (!isset($_GET['action']))
 print <<<EOD
 <div class="text">
 EOD;
+	$sticky_postlist = file_get_contents("db/st_list.txt");
 	$postlist = file_get_contents("db/list.txt");
+	echo $sticky_postlist;
 	echo $postlist;
 	print <<<EOD
 	<br><hr><a href="topic.php?action=newtopic">New Topic</a></div>
