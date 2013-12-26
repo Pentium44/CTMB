@@ -6,7 +6,6 @@
  * board that is created by Chris Dorman (CrazyCoder Productions), 2012-2013
  * CTMB is released under the Creative Commons - BY - NC 3.0 NonPorted license
  * 
- * Website : http://cdrom.co.nf/cutils.php - Maintained By Chris Dorman
  * CTMB is released with NO WARRANTY.
  * 
  */
@@ -20,19 +19,18 @@ else
 	include "config.php";
 }
 
-$username = htmlentities(stripslashes($_POST['username']));
-$password = $_POST['password'];
-$password_again = $_POST['password_again'];
-
 include "themes/$theme/header.php";
 
-$action = $_GET['action'];
-if (isset($action))
+if (isset($_GET['action']))
 {
+	$action = $_GET['action'];
 	if ($action=="doregister")
 	{
-		if (isset($username) && isset($password) && isset($password_again))
+		if (isset($_POST['username']) && isset($_POST['password']) && isset($_POST['password_again']))
 		{
+			$username = htmlentities(stripslashes($_POST['username']));
+			$password = $_POST['password'];
+			$password_again = $_POST['password_again'];
 			if ($username=="")
 			{
 				echo "<div class=\"text\">Error: Username not provided.</div>";
@@ -61,19 +59,21 @@ if (isset($action))
 							}
 							else
 							{
-								file_put_contents("db/pendingusers.txt", $username . "<br>");
+								$old_users = file_get_contents("db/pendingusers.txt");
+								file_put_contents("db/pendingusers.txt", $username . "<br>" . $old_users);
 							}
 							
 							if(file_exists("db/users/$username.php")) { echo "<div class='text'>Error: User Exists!</div>"; } else {
 							file_put_contents("db/users/$username.status", "user");
 							file_put_contents("db/users/$username.color", $user_color);
-							file_put_contents("db/users/$username.logo", "Board User");
+							file_put_contents("db/users/$username.rank", "Board User");
+							file_put_contents("db/users/$username.postnumber", "0");
 							$pass_string = "<?php \$userpass = \"$password\" ?>";
 							file_put_contents("db/users/" . $username . ".php", $pass_string);
 							$old_users = file_get_contents("db/userlist.txt");
-							$user = "<b>$username</b><br>";
+							$user = "<a href=\"user.php?action=userpanel&user=$username\">$username</a><br>\n";
 							file_put_contents("db/userlist.txt", $user . $old_users);
-							echo "<div class=\"text\">Your account has been created. You can now login.</div>";
+							echo "<div class=\"text\">Your account has been created. <a href='index.php?do=login'>Login</a></div>";
 							}
 						}
 						else
@@ -99,13 +99,40 @@ if (isset($action))
 	</div>
 EOD;
 	}
+	else if($action=="userpanel")
+	{
+		if(isset($_GET['user']))
+		{
+			$user = $_GET['user'];
+			if(file_exists("db/users/$user.php"))
+			{
+				echo "<div class=\"text\"><h2>User - $user</h2>";
+				$usercolor = file_get_contents("db/users/$user.color");
+				$userrank = file_get_contents("db/users/$user.rank");
+				$userpostnumber = file_get_contents("db/users/$user.postnumber");
+				echo "Username: <font color=\"$usercolor\">$user</font><br>";
+				echo "User rank: $userrank<br>";
+				echo "Number of posts: $userpostnumber<br>";
+				echo "User avatar:<br><img style='margin: auto; width: 140px;' src=\"load.php?action=avatar&name=$user\" alt=\"User avatar\" /><br><br>";
+				echo "</div>";
+			}
+			else
+			{
+				echo "<div class=\"text\">Error: User does not exist, or was removed.</div>";
+			}
+		}
+		else
+		{
+			echo "<div class=\"text\">Error: User not specified.</div>";
+		}
+	}
 	else 
 	{
 		echo "Error: Action not found!";
 	}
 }
 
-if (!isset($action))
+if (!isset($_GET['action']))
 {
 	header("Location: index.php");
 }

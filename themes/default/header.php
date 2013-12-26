@@ -6,7 +6,7 @@
 		<link rel="stylesheet" type="text/css" href="themes/<?php echo $theme ?>/style.css">
 	</head>
 <body>
-	<div class="title"><?php echo $title ?></div>
+	<div class="title"><?php echo $title; ?><div style="font-size:18px;color:silver;"><?php echo $desc; ?></div></div>
 	<div class="board">
 		<?php
 			if(isset($_SESSION['ctmb-login-user']) && isset($_SESSION['ctmb-login-pass']) && file_exists("db/users/" . $_SESSION['ctmb-login-user'] . ".php"))
@@ -18,26 +18,26 @@
 					if($check_admin!="admin")
 					{
 						print <<<EOD
-						<!--<center>--><span class="menu"><a href="index.php">Forum Index</a><a href="index.php?action=logout">Logout</a><a href="index.php?action=userlist">Userlist</a><a href="avatar.php">Avatars</a></span><!--</center>--><br><br>
+						<!--<center>--><div class="menu"><a href="index.php">Forum Index</a><a href="index.php?action=logout">Logout</a><a href="index.php?action=userlist">Userlist</a><a href="user_panel.php">Control Panel</a></div><!--</center>--><br />
 EOD;
 					}
 					else
 					{
 						print <<<EOD
-						<!--<center>--><span class="menu"><a href="index.php">Forum Index</a><a href="index.php?action=logout">Logout</a><a href="index.php?action=userlist">Userlist</a><a href="avatar.php">Avatars</a><a href="admin_panel.php">Administration</a></span><!--</center>--><br><br>
+						<!--<center>--><div class="menu"><a href="index.php">Forum Index</a><a href="index.php?action=logout">Logout</a><a href="index.php?action=userlist">Userlist</a><a href="user_panel.php">Control Panel</a><a href="admin_panel.php">Administration</a></div><!--</center>--><br />
 EOD;
 					}					
 				}
 				else
 				{
 					print <<<EOD
-					<!--<center>--><span class="menu"><a href="index.php">Forum Index</a><a href="user.php?action=register">Register</a><a href="index.php?action=login">Login</a><a href="index.php?action=userlist">Userlist</a></span><!--</center>--><br><br>
+					<!--<center>--><div class="menu"><a href="index.php">Forum Index</a><a href="user.php?action=register">Register</a><a href="index.php?action=login">Login</a><a href="index.php?action=userlist">Userlist</a></div><!--</center>--><br />
 EOD;
 				}
 			}
 			else
 			{
 				print <<<EOD
-				<!--<center>--><span class="menu"><a href="index.php">Forum Index</a><a href="user.php?action=register">Register</a><a href="index.php?action=login">Login</a><a href="index.php?action=userlist">Userlist</a></span><!--</center>--><br><br>
+				<!--<center>--><div class="menu"><a href="index.php">Forum Index</a><a href="user.php?action=register">Register</a><a href="index.php?action=login">Login</a><a href="index.php?action=userlist">Userlist</a></div><!--</center>--><br />
 EOD;
 			} ?>

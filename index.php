@@ -1,6 +1,4 @@
 <?php
-// Start session //
-//session_start();
 
 /*
  * CTMB - Crazy Tiny Message Board - (C) CrazyCoder Productions, 2012-2013
@@ -8,7 +6,6 @@
  * board that is created by Chris Dorman (CrazyCoder Productions), 2012-2013
  * CTMB is released under the Creative Commons - BY - NC 3.0 NonPorted license
  * 
- * Website : http://cdrom.co.nf/cutils.php - Maintained By Chris Dorman
  * CTMB is released with NO WARRANTY.
  * 
  */
@@ -29,9 +26,9 @@ if (isset($_GET['action']))
 	if ($_GET['action']=="userlist")
 	{
 		$userlist = file_get_contents("db/userlist.txt");
-		echo "<div class=\"text\"><ul>";
+		echo "<div class=\"text\"><h2>Board Users</h2>";
 		echo $userlist;
-		echo "</ul></div>";
+		echo "</div>";
 
 	}
 	
@@ -40,7 +37,7 @@ if (isset($_GET['action']))
 		echo "<div class='text'>";
 		print <<<EOD
 		<center><h2><b>Help: Using BBCode</b></h2></center>
-		BBCode is a link to HTML used on wikis, blogs, boards, and forums. Here is a list of BBCode tags available within CTMB.
+		BBCode is a link to HTML used on blogs, and forums. Here is a list of BBCode tags available within CTMB.
 		<ul>
 		<li>[b]Text[b] : Bold Text</li>
 		<li>[i]Text[/i] : Italic Text</li>
@@ -50,7 +47,7 @@ if (isset($_GET['action']))
 		<li>[img]http://example.com/image.png[/img] : Images</li>
 		<li>[mail]user@email.com[/mail] OR [mail=user@email.com]MY Email[/mail] : Linking email</li>
 		<li>[code]Some Code[/code] : Code</li>
-		<li>[audio]http://example.com/example.mp3[/audio] : Embed audio player (MP3 only)</li>
+		<li>[spoiler]Content for spoiler[/spoiler] : Spoilers</li>
 		</ul>
 		
 EOD;
@@ -76,7 +73,8 @@ EOD;
 		{
 			$_SESSION['ctmb-login-user'] = null;
 			$_SESSION['ctmb-login-pass'] = null;
-			header("Location: index.php");
+			echo "<div class='text'>Logged out - <a href='index.php'>Back to index</a></div>\n";
+			//header("Location: index.php");
 		}
 		else
 		{
@@ -95,7 +93,18 @@ EOD;
 				{
 					$_SESSION['ctmb-login-user'] = $_POST['username'];
 					$_SESSION['ctmb-login-pass'] = $_POST['password'];
-					header("Location: index.php");
+					
+					// Mark in log success logging in //
+					$date = date("F j, Y");
+					$time = date("g:i a");
+					$date_string = "$date at $time";
+					$username = $_POST['username'];
+					$log_file = "db/logs/logins.txt";
+					$log_content_old = file_get_contents($log_file);
+					$log_content_string = "<td>$username</td>\n<td>$date_string</td>\n<td>" . $_SERVER['REMOTE_ADDR'] . "</td>\n<td><font color=\"#00ff00\">Successful</font></td>\n</tr><tr>\n\n";
+					file_put_contents($log_file, $log_content_string . $log_content_old);	
+					echo "<div class='text'>Logged in - <a href='index.php'>Back to index</a></div>\n";
+					//header("Location: index.php");
 				}
 				else 
 				{ 
@@ -117,16 +126,28 @@ EOD;
 /* Show Forum topics */
 if (!isset($_GET['action']))
 {
-print <<<EOD
-<div class="text">
-EOD;
-	$sticky_postlist = file_get_contents("db/st_list.txt");
-	$postlist = file_get_contents("db/list.txt");
-	echo $sticky_postlist;
-	echo $postlist;
-	print <<<EOD
-	<br><hr><a href="topic.php?action=newtopic">New Topic</a></div>
-EOD;
+	echo "<div class=\"text\">\n";
+	echo "<table id='tblarge'>\n";
+		echo "<tr>\n";
+		echo "<td id='ctitle_t'>Title / Description</td>\n";
+		echo "<td id='cpost_t'>Last Post By</td>\n";
+		echo "<td id='cdate_t'>Date</td>\n";
+		echo "</tr>\n";
+	foreach(glob("db/cat/" . "*") as $categories)
+	{
+		$cat_title = file_get_contents("$categories/title.txt");
+		$cat_date = file_get_contents("$categories/date.txt");
+		$cat_desc = file_get_contents("$categories/desc.txt");
+		$cat_id = file_get_contents("$categories/catid.txt");
+		$cat_lastpost = file_get_contents("$categories/last.txt");
+		echo "<tr>\n";
+		echo "<td id='ctitle'><a href=\"view.php?cid=$cat_id\" id='title_text'>$cat_title</a><br />$cat_desc</td>\n";
+		echo "<td id='cpost'>$cat_lastpost</td>\n";
+		echo "<td id='cdate'>$cat_date</td>\n";
+		echo "</tr>\n";
+	}
+	echo "</table>\n";
+	echo "</div>\n";
 }
 
 include "themes/$theme/footer.php";

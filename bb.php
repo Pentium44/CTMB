@@ -31,11 +31,9 @@ function bbcode_format($str) {
                 '/\[font\=(.*?)\](.*?)\[\/font\]/is',   
                 '/\[color\=(.*?)\](.*?)\[\/color\]/is',  
                  //added pre class for code presentation  
-              '/\[code\](.*?)\[\/code\]/is',  
+				'/\[code\](.*?)\[\/code\]/is',  
                 //added paragraph  
-              '/\[p\](.*?)\[\/p\]/is',  
-                // Audio tag //
-              '/\[audio\](.*?)\[\/audio\]/is',
+				'/\[p\](.*?)\[\/p\]/is',  
                 );  
   
     $simple_replace = array(  
@@ -56,8 +54,6 @@ function bbcode_format($str) {
 				'<p><code class="code">$1</code></p>',  
 				//added paragraph  
 				'<p>$1</p>', 
-				// Audio tag //
-				'<object type="application/x-shockwave-flash" data="data/player.swf" width="200" height="20"><param name="movie" value="data/player.swf"><param name="bgcolor" value="#000000"><param name="FlashVars" value="mp3=$1&autoplay=1&buttoncolor=ffffff&slidercolor=ffffff&loadingcolor=989898"></object>',
                 );  
   
     // Do simple BBCode's  
@@ -65,7 +61,7 @@ function bbcode_format($str) {
     //Spoilers.
 	if(strstr($str, "[spoiler]") && !strstr($str, "[/spoiler]"))
 		die("You didn't close the spoiler tag!\n");
-	$str = str_replace("[spoiler]", '<span class="spoiler">', $str);
+	$str = str_replace("[spoiler]", '<button id="spoilerbtn" onclick="javascript:openCloseSpoiler();">Spoiler</button><br /><span style="display:none;border: solid 1px white;" id="spoiler">', $str);
 	$str = str_replace("[/spoiler]", '</span>', $str);
 
     // Do <blockquote> BBCode  
