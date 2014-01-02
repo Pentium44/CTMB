@@ -25,6 +25,10 @@ Thanks, Chris
 /// Change Log
 ////
 
+2.75--
+* Fixed major bug in post / category deleting
+* Fixed some minor bugs in administration panel
+
 2.72--
 * Fixed some bugs
 

@@ -43,11 +43,9 @@ else
 			$config_string2 = "\$validation = \"false\";\n ";
 		}
 		
-		$config_string4 = "\$theme = \"default\";\n ";
-		
 		// Close the php tag //
-		$config_string5 = "?>\n";
-		file_put_contents("config.php", $config_string1 . $config_string2 . $config_string3 . $config_string4 . $config_string5);
+		$config_string4 = "?>\n";
+		file_put_contents("config.php", $config_string1 . $config_string2 . $config_string3 . $config_string4);
 	
 		// Create Owner //
 		file_put_contents("db/users/" . $username . ".validation", "valid");

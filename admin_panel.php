@@ -19,6 +19,9 @@ else
 	include "config.php";
 }
 
+// Set user specified theme, else use default
+if(isset($_SESSION['ctmb-theme'])){ $theme = $_SESSION['ctmb-theme']; } else { $theme = "default"; }
+
 include "themes/$theme/header.php";
 
 $date = date("n, j, Y");
@@ -186,10 +189,11 @@ EOD;
 			if(file_exists("db/users/" . $_POST['username'] . ".php")) { unlink('db/users/' . $_POST['username'] . '.php'); }
 			if(file_exists("db/users/" . $_POST['username'] . ".color")) { unlink('db/users/' . $_POST['username'] . '.color'); }
 			if(file_exists("db/users/" . $_POST['username'] . ".status")) { unlink('db/users/' . $_POST['username'] . '.status'); }
-			if(file_exists("db/users/" . $_POST['username'] . ".logo")) { unlink('db/users/' . $_POST['username'] . '.rank'); }
+			if(file_exists("db/users/" . $_POST['username'] . ".rank")) { unlink('db/users/' . $_POST['username'] . '.rank'); }
 			if(file_exists("db/users/" . $_POST['username'] . ".validation")) { unlink('db/users/' . $_POST['username'] . '.validation'); }
 			if(file_exists("db/users/avatars/" . $_POST['username'] . ".*")) { unlink('db/users/avatars/' . $_POST['username'] . '.*'); }			
 			if(file_exists("db/users/" . $_POST['username'] . ".postnumber")) { unlink('db/users/' . $_POST['username'] . '.postnumber'); }
+				
 			$userlist = "db/userlist.txt";
 			$userlist_data = file_get_contents($userlist);
 			$remove_user_from_list = str_replace("<a href=\"user.php?action=userpanel&user=$user_to_replace\">$user_to_replace</a><br>", "", $userlist_data);
@@ -278,14 +282,10 @@ EOD;
 		{
 			$cat_title = $_POST['cat_title'];
 			$cat_desc = $_POST['cat_desc'];
-			// Mrtux code from here to where it says stop! - from TuXBoard //
-			$id = 0;
-			foreach (glob("db/cat/" . "*") as $unusedvar)
-			{
-				$id = $id + 1;
-			}
+			
+			// add new category id to count
+			$id = file_get_contents("db/cat.amount");
 			$id = $id + 1;
-			// STOP!! Chris's Code starting!!! //
 			
 			mkdir("db/cat/$id", 0777);
 			file_put_contents("db/cat/$id/title.txt", $cat_title);
@@ -293,6 +293,11 @@ EOD;
 			file_put_contents("db/cat/$id/desc.txt", $cat_desc);
 			file_put_contents("db/cat/$id/catid.txt", $id);
 			file_put_contents("db/cat/$id/last.txt", "Nobody");
+			file_put_contents("db/cat/$id/post.amount", "0");
+			
+			// Update amount of categories present
+			file_put_contents("db/cat.amount", $id);
+			
 			echo "<div class=\"text\">Category Created: <a href='admin_panel.php'>Back to panel</a></div>";
 			//header( "refresh:2;url=admin_panel.php" );
 		}

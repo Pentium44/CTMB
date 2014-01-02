@@ -21,6 +21,9 @@ else
 // For signature //
 include "bb.php";
 
+// Set user specified theme, else use default
+if(isset($_SESSION['ctmb-theme'])){ $theme = $_SESSION['ctmb-theme']; } else { $theme = "default"; }
+
 include "themes/$theme/header.php";
 
 if(isset($_SESSION['ctmb-login-user']) && isset($_SESSION['ctmb-login-pass']))

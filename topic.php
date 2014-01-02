@@ -25,6 +25,9 @@ $time = date("g:i a");
 $date_string = "$date at $time";
 $rand = rand(11111, 99999);
 
+// Set user specified theme, else use default
+if(isset($_SESSION['ctmb-theme'])){ $theme = $_SESSION['ctmb-theme']; } else { $theme = "default"; }
+
 include "themes/$theme/header.php";
 
 if(isset($_SESSION['ctmb-login-user']) && isset($_SESSION['ctmb-login-pass']))
@@ -196,11 +199,7 @@ EOD;
 					$str6 = "<script type='text/javascript'>" . $loadusercolor . $loaduserrank . $loadsig . "</script></td></tr>\n";
 					$newcontent = "<h3 style='text-align:center'>$title</h3>" . $str1 . $str2 . $str3 . $str4 . $str5 . $str6; 
 
-					$id = 0;
-					foreach (glob("db/cat/$catid/post_" . "*" . ".txt") as $unusedvar)
-					{
-						$id = $id + 1;
-					}
+					$id = file_get_contents("db/cat/$catid/post.amount");
 					$id = $id + 1;
 					
 					//Add topic creation to logs
@@ -229,6 +228,11 @@ EOD;
 					//Getting users color//
 					$usercolor = file_get_contents("db/users/$username.color");
 					file_put_contents("db/cat/$catid/last.txt", "<font color=\"$usercolor\">$username</font>");
+					
+					// Update amount of posts in category
+					file_put_contents("db/cat/$catid/post.amount", $id);
+					
+					// Successful!
 					print <<<EOD
 					<div class="text">The creaation of this topic ($id) was successful - <a href="view.php?tid=$id&cid=$catid">To topic($id)</a></div>
 EOD;
