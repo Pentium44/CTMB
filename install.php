@@ -16,7 +16,6 @@ if(!isset($_GET['do']))
 	Board Desc: <input type="text" name="desc" id="desc"><br>
 	Board Owner Username: <input type="text" name="username" id="username"><br>
 	Board Owner Password: <input type="password" name="password" id="password"><br>
-	User Validation (Validate new users before they can post): <input type="checkbox" name="validation" value="validation"><br>
 	<input type="submit" name="install" value="Install CTMB">
 	</form>
 	</body>
@@ -33,19 +32,11 @@ else
 		$password = $_POST['password'];
 		$desc = stripslashes(htmlentities($_POST['desc']));
 		$image_upload_size = "300000";
-		$config_string1 = "<?php\n //CTMB Config generation \n\n \$title = \"$title\";\n \$desc = \"$desc\";\n \$admin_color = \"#ff00ff\";\n \$user_color = \"#00ff00\";\n  \$image_upload_size = \"$image_upload_size\";\n ";
-		if(isset($_POST['validation']))
-		{
-			$config_string2 = "\$validation = \"true\";\n ";
-		}
-		else
-		{
-			$config_string2 = "\$validation = \"false\";\n ";
-		}
+		$config_string1 = "<?php\n //CTMB Config generation \n\n \$title = \"$title\";\n \$desc = \"$desc\";\n \$admin_color = \"#ff00ff\";\n \$user_color = \"#00ff00\";\n  \$image_upload_size = \"$image_upload_size\";\n \$version = \"2.81\";\n";
 		
 		// Close the php tag //
 		$config_string4 = "?>\n";
-		file_put_contents("config.php", $config_string1 . $config_string2 . $config_string3 . $config_string4);
+		file_put_contents("config.php", $config_string1 . $config_string4);
 	
 		// Create Owner //
 		file_put_contents("db/users/" . $username . ".validation", "valid");
@@ -53,10 +44,21 @@ else
 		file_put_contents("db/users/$username.color", "#ff0000");
 		file_put_contents("db/users/$username.rank", "Board Owner");
 		file_put_contents("db/users/$username.postnumber", "0");
+		file_put_contents("db/users/$username.theme", "default"); // Set users theme (default)
 		file_put_contents("db/users/" . $username . ".php", "<?php \$userpass = \"$password\"; ?>");
-		$old_users = file_get_contents("db/userlist.txt");
 		$user = "<a href=\"user.php?action=userpanel&user=$username\">$username</a><br>\n";
-		file_put_contents("db/userlist.txt", $user . $old_users);
+		file_put_contents("db/userlist.txt", "");
+		file_put_contents("db/userlist.txt", $user);
+		
+		// Set up forum views database
+		file_put_contents("db/forum.views", "0");
+		
+		// There are no categories, set it
+		file_put_contents("db/cat.amount", "0");
+		
+		// Set owner account as latest created user
+		file_put_contents("db/users/latest", "<b style=\"color:#ff0000;\">$username</b>");
+		
 		echo "<html>Board Installed! : : <a href='index.php'>To board</a></html>";
 	
 	}

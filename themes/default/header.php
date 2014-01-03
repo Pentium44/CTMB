@@ -1,4 +1,12 @@
-<?php session_start(); include "config.php"; ?>
+<?php 
+/* CTMB Theme
+ * (C) Chris Dorman, 2013-2014 - CC-BY-NC 3.0
+ */
+
+include "config.php"; 
+
+$theme = "default"; // Theme name (for stylesheet)
+?>
 
 <html>
 	<head>

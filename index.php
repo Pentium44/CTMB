@@ -1,5 +1,5 @@
 <?php
-
+session_start();
 /*
  * CTMB - Crazy Tiny Message Board - (C) CrazyCoder Productions, 2012-2013
  * CTMB (Crazy Tiny Message Board) is a simple, flatfile database message
@@ -21,6 +21,11 @@ else
 
 // Set user specified theme, else use default
 if(isset($_SESSION['ctmb-theme'])){ $theme = $_SESSION['ctmb-theme']; } else { $theme = "default"; }
+
+// The forum was viewed, record it
+$forum_views = file_get_contents("db/forum.views");
+$forum_views = $forum_views + 1;
+file_put_contents("db/forum.views", $forum_views);
 
 include "themes/$theme/header.php";
 
@@ -94,18 +99,10 @@ EOD;
 				include "db/users/" . $_POST['username'] . ".php";
 				if($_POST['password']==$userpass)
 				{
+					$theme = file_get_contents("db/users/" . $_POST['username'] . ".theme");
 					$_SESSION['ctmb-login-user'] = $_POST['username'];
 					$_SESSION['ctmb-login-pass'] = $_POST['password'];
-					
-					// Mark in log success logging in //
-					$date = date("F j, Y");
-					$time = date("g:i a");
-					$date_string = "$date at $time";
-					$username = $_POST['username'];
-					$log_file = "db/logs/logins.txt";
-					$log_content_old = file_get_contents($log_file);
-					$log_content_string = "<td>$username</td>\n<td>$date_string</td>\n<td>" . $_SERVER['REMOTE_ADDR'] . "</td>\n<td><font color=\"#00ff00\">Successful</font></td>\n</tr><tr>\n\n";
-					file_put_contents($log_file, $log_content_string . $log_content_old);	
+					$_SESSION['ctmb-theme'] = $theme;
 					echo "<div class='text'>Logged in - <a href='index.php'>Back to index</a></div>\n";
 					//header("Location: index.php");
 				}

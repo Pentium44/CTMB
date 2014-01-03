@@ -1,4 +1,5 @@
 <?php
+session_start();
 /*
  * CTMB - Crazy Tiny Message Board - (C) CrazyCoder Productions, 2012-2013
  * CTMB (Crazy Tiny Message Board) is a simple, flatfile database message
@@ -129,6 +130,41 @@ EOD;
 EOD;
 					}
 				}
+				if($_GET['action']=="theme")
+				{
+					if(isset($_GET['method']) && $_GET['method']=="settheme")
+					{
+						$theme_select = $_POST['theme'];
+						file_put_contents("db/users/$username.theme", $theme_select);
+						$_SESSION['ctmb-theme'] = $theme_select;
+						echo "<div class='text'>Theme set: <a href='user_panel.php'>Click here</a></div>";
+						//header( "refresh:2;url=user_panel.php" );
+					}
+					else
+					{
+						print <<<EOD
+<div class="text">
+<h3 style='text-align:center;'>Change your signature</h3>
+<a href="index.php?action=help_bbcode">BBCode Help</a><br>
+<form action="user_panel.php?action=theme&method=settheme" method="post">
+<select name="theme">
+EOD;
+						$themedir = "themes/";
+						$opendir = opendir($themedir);
+						while(false != ($theme_name = readdir($opendir)))
+						{
+							if($theme_name == "." || $theme_name == "..") { continue; }
+							$theme_title = file_get_contents("$themedir" . "$theme_name/" . "name");
+							echo "<option value='$theme_name'>$theme_title</option>\n";
+						}
+						print <<<EOD
+</select>
+<input type="submit" name="submit" value="Save Theme">
+</form>
+</div>
+EOD;
+					}
+				}
 			}
 
 			/* Show Forum topics */
@@ -137,8 +173,9 @@ EOD;
 				print <<<EOD
 <div class="text">
 <h2>User Control Panel</h2>
-<a href="user_panel.php?action=avatar">Change your Avatar</a><br>
-<a href="user_panel.php?action=sig">Change your Signature</a><br>
+<a href="user_panel.php?action=avatar">Change your Avatar</a><br />
+<a href="user_panel.php?action=sig">Change your Signature</a><br />
+<a href="user_panel.php?action=theme">Change your Theme</a><br />
 </div>
 EOD;
 			}

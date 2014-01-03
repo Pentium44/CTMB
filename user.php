@@ -1,5 +1,5 @@
 <?php
-
+session_start();
 /*
  * CTMB - Crazy Tiny Message Board - (C) CrazyCoder Productions, 2012-2013
  * CTMB (Crazy Tiny Message Board) is a simple, flatfile database message
@@ -16,7 +16,7 @@ if(!file_exists("config.php"))
 }
 else
 {
-	include "config.php";
+	include_once("config.php");
 }
 
 // Set user specified theme, else use default
@@ -71,11 +71,16 @@ if (isset($_GET['action']))
 							file_put_contents("db/users/$username.color", $user_color);
 							file_put_contents("db/users/$username.rank", "Board User");
 							file_put_contents("db/users/$username.postnumber", "0");
+							file_put_contents("db/users/$username.theme", "default"); // Set users theme (default)
 							$pass_string = "<?php \$userpass = \"$password\" ?>";
 							file_put_contents("db/users/" . $username . ".php", $pass_string);
 							$old_users = file_get_contents("db/userlist.txt");
 							$user = "<a href=\"user.php?action=userpanel&user=$username\">$username</a><br>\n";
 							file_put_contents("db/userlist.txt", $user . $old_users);
+							
+							// Set owner account as latest created user
+							file_put_contents("db/users/latest", "<b style=\"color:$user_color;\">$username</b>");
+							
 							echo "<div class=\"text\">Your account has been created. <a href='index.php?do=login'>Login</a></div>";
 							}
 						}

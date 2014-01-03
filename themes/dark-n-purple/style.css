@@ -14,55 +14,36 @@
 body {
 	font-family: "Open Sans", Arial, sans-serif;
 	color: #ffffff;
-	/*background-image:url('images/bg.jpg');*/
-	/*background-image:url('images/bg-black.jpg');*/
-	background-image:url('images/blue_grad2.png');
-	/*background-size: 100% auto;
-	-o-background-size: 100% auto;
-	-moz-background-size: 100% auto;
-	-webkit-background-size: 100% auto;
-	background-attachment: fixed;
-	background-position: center;*/
+	background-image:url('images/bg.png');
 	background-color: #444444;
 	font-size: 14px;
 }
 
 .title {
 	text-align: left; font-size: 38px;
-	padding: 16px; background: #131313;
-	border-right: solid 1px #444444; border-left: solid 1px #444444;
-	border-top: solid 1px #444444;
-	box-shadow: 0px 0px 10px #000000;
+	padding: 16px;
 }
 
 .menu {
-	font-size: 20px; background: #131313;
-	border: solid 1px #444444;
-	font-family: "Didact Gothic", "Open Sans", Arial, sans-serif;
+	font-size: 16px; background: #131313;
+	border: solid 1px #9900cc;
+	font-family: Arial, sans-serif;
 	box-shadow: 0px 0px 10px #000000;
 }
 
 .menu a { 
 	color: silver; text-decoration: none; 
-	padding-right: 5px; padding-left: 5px;
-	
-	/* some effects */
-	transition: ease-in .4s color, ease-in .4s background-color, ease-in .4s text-shadow;
-	-moz-transition: ease-in .4s color, ease-in .4s background-color, ease-in .4s text-shadow;
-	-webkit-transition: ease-in .4s color, ease-in .4s background-color, ease-in .4s text-shadow;
-	-o-transition: ease-in .4s color, ease-in .4s background-color, ease-in .4s text-shadow;
+	padding-right: 1px; padding-left: 1px;
+	padding-bottom: 4px;
 }
 
 .menu a:hover { 
-	color: white; text-decoration: none; 
-	background-color: #323232; text-shadow: 0px 0px 7px white;
-	border-top: solid 1px #888888;
+	color: white;
 }
 
 .text {
 	padding: 12px; background: #131313;
 	border: solid 1px #444444; border-radius: 4px;
-	box-shadow: 0px 0px 10px #000000;
 }
 
 .text a { 

@@ -1,5 +1,5 @@
 <?php
-
+session_start();
 /*
  * CTMB - Crazy Tiny Message Board - (C) CrazyCoder Productions, 2012-2013
  * CTMB (Crazy Tiny Message Board) is a simple, flatfile database message
@@ -27,6 +27,11 @@ $rand = rand(11111, 99999);
 
 // Set user specified theme, else use default
 if(isset($_SESSION['ctmb-theme'])){ $theme = $_SESSION['ctmb-theme']; } else { $theme = "default"; }
+
+// The forum was viewed, record it
+$forum_views = file_get_contents("db/forum.views");
+$forum_views = $forum_views + 1;
+file_put_contents("db/forum.views", $forum_views);
 
 include "themes/$theme/header.php";
 
@@ -73,11 +78,6 @@ EOD;
 			if (file_exists("db/users/" . $_SESSION['ctmb-login-user'] . ".php"))
 			{
 				$username = $_SESSION['ctmb-login-user'];
-				$validation = file_get_contents("db/users/" . $username . ".validation");
-				if (file_exists("db/users/" . $username . ".validation"))
-				{
-					if ($validation=="valid")
-					{
 						$id = $_GET['id'];
 						$catid = $_GET['cid'];
 						$getoldcontent = file_get_contents("db/cat/$catid/post_$id.txt");
@@ -123,20 +123,6 @@ EOD;
 						<div class="text">Your reply to topic ID: $id was successful - <a href="view.php?tid=$id&cid=$catid">Topic post</a></div>
 EOD;
 						//header( "refresh:3;url=view.php?tid=$id&cid=$catid" );
-					}
-					else
-					{
-						print <<<EOD
-						<div class="text">Error: Your account has not been validated, or you have been declined by the board administrator, in which you cannot reply or post.</div>
-EOD;
-					}
-				}
-				else
-				{
-					print <<<EOD
-					<div class="text">Error: Your account has not been validated, or you have been declined by the board administrator, in which you cannot reply or post.</div>
-EOD;
-				}
 			}
 			else
 			{
@@ -176,11 +162,6 @@ EOD;
 			$username = $_SESSION['ctmb-login-user'];
 			$topic = $_POST['topic'];
 			$catid = $_GET['cid'];
-			$validation = file_get_contents("db/users/" . $username . ".validation");
-			if (file_exists("db/users/" . $username . ".validation"))
-			{
-				if ($validation=="valid")
-				{
 					$text = htmlentities(stripslashes($_POST["text"]));
 					$text2 = nl2br($text);
 					include "bb.php";
@@ -218,6 +199,7 @@ EOD;
 						file_put_contents("db/cat/$catid/post_$id" . ".txt_date", $date_string);
 						file_put_contents("db/cat/$catid/post_$id" . ".txt_id", $id);
 						file_put_contents("db/cat/$catid/post_$id" . ".txt_replies", "1");
+						file_put_contents("db/cat/$catid/post_$id" . ".txt_views", "1");
 					}
 			
 					//add new post to postnumber//
@@ -237,20 +219,6 @@ EOD;
 					<div class="text">The creaation of this topic ($id) was successful - <a href="view.php?tid=$id&cid=$catid">To topic($id)</a></div>
 EOD;
 					//header( "refresh:3;url=view.php?tid=$id&cid=$catid" );
-				}
-				else
-				{
-					print <<<EOD
-					<div class="text">Error: Your account has not been validated, or you have been declined by the board administrator, in which you cannot reply or post.</div>
-EOD;
-				}
-			}
-			else
-			{
-				print <<<EOD
-				<div class="text">Error: Your account has not been validated, or you have been declined by the board administrator, in which you cannot reply or post.</div>
-EOD;
-			}
 		}
 		else
 		{

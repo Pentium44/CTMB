@@ -1,4 +1,5 @@
 <?php
+session_start();
 /*
  * CTMB - Crazy Tiny Message Board - (C) CrazyCoder Productions, 2012-2013
  * CTMB (Crazy Tiny Message Board) is a simple, flatfile database message
@@ -56,35 +57,8 @@ if (isset($_GET['action']))
 			</div>	
 EOD;
 		}
-		else if ($method=="puser")
-		{
-			// Mark in log success logging in //
-			$log_file = "db/logs/logins.txt";
-			$log_content_old = file_get_contents($log_file);
-			$log_content_string = "<td>$username</td>\n<td>$date_string</td>\n<td>" . $_SERVER['REMOTE_ADDR'] . "</td>\n<td><font color=\"#00ff00\">Successful</font></td>\n</tr><tr>\n\n";
-			file_put_contents($log_file, $log_content_string . $log_content_old);				
-
-			$pendingusers = file_get_contents("db/pendingusers.txt");
-			print <<<EOD
-			<div class="text"><b><h2>Pending Users</h2></b>
-EOD;
-			echo $pendingusers;
-			print <<<EOD
-			<br>
-			<form action="admin_panel.php?action=validate_user" method="post">
-			Username: <input type="text" name="username"><br>
-			Action (Check box to accept user): <input type="checkbox" name="valid_action" value="accept">Accept<br>
-			<input type="submit" value="Validate User" name="validate_user" id="validate_user">
-			</div>	
-EOD;
-		}
 		else if($method=="logs")
-		{
-			// Mark in log success logging in //
-			$log_file = "db/logs/logins.txt";
-			$log_content_old = file_get_contents($log_file);
-			$log_content_string = "<td>$username</td>\n<td>$date_string</td>\n<td>" . $_SERVER['REMOTE_ADDR'] . "</td>\n<td><font color=\"#00ff00\">Successful</font></td>\n</tr><tr>\n\n";
-			file_put_contents($log_file, $log_content_string . $log_content_old);				
+		{				
 			$log_posts = file_get_contents("db/logs/posts.txt");
 			$log_topics = file_get_contents("db/logs/topics.txt");
 			// Center Table //
@@ -205,45 +179,6 @@ EOD;
 		{
 			print <<<EOD
 			<div class="text">Error: Username not specified</div>
-EOD;
-		}
-	}
-	
-	if ($action=="validate_user")
-	{
-		if ($_POST['username']!="")
-		{
-			if (file_exists("db/users/" . $_POST['username'] . ".php"))
-			{
-				$username = $_POST['username'];
-				$pendinguserslist = file_get_contents("db/pendingusers.txt");
-				$remove_user = str_replace($_POST['username'] . "<br>", "", $pendinguserslist);
-				if (!isset($_POST['valid_action']))
-				{
-					file_put_contents("db/users/" . $_POST['username'] . ".validation", "invalid");
-					file_put_contents("db/pendingusers.txt", $remove_user);
-					echo "<div class=\"text\">$username declined: <a href='admin_panel.php'>Back to panel</a></div>";
-					//header( "refresh:3;url=admin_panel.php" );
-				}
-				if (isset($_POST['valid_action']))
-				{
-					file_put_contents("db/users/" . $_POST['username'] . ".validation", "valid");
-					file_put_contents("db/pendingusers.txt", $remove_user);
-					echo "<div class=\"text\">$username validated: <a href='admin_panel.php'>Back to panel</a></div>";
-					//header( "refresh:2;url=admin_panel.php" );
-				}
-			}
-			else
-			{
-				print <<<EOD
-				<div class="text">Error: User was not found</div>
-EOD;
-			}
-		}
-		else
-		{
-			print <<<EOD
-			<div class="text">Error: No username specified</div>
 EOD;
 		}
 	}
@@ -425,7 +360,6 @@ print <<<EOD
 		<h2><b>Administrator Panel</b></h2>
 		<b>Managing Users</b><br>
 		<a href="admin_panel.php?action=panel&method=rmuser">Remove a User</a><br>
-		<a href="admin_panel.php?action=panel&method=puser">Pending Users</a><br>
 		<a href="admin_panel.php?action=panel&method=usercolor">Change User Color</a><br>
 		<a href="admin_panel.php?action=panel&method=userrank">Change User Rank</a><br>
 		<a href="admin_panel.php?action=panel&method=admin_user">Administrate a User</a><br>
