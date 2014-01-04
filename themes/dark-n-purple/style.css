@@ -21,8 +21,14 @@ body {
 
 .title {
 	text-align: left; font-size: 38px;
-	padding: 16px;
+	padding: 16px; 
 }
+
+#finfo_t { width: 200px; border: solid 1px #9900cc; }
+#finfo_t tr { padding: 2px; }
+#finfo_t td { border: solid 1px #333333; font-size: 12px; }
+#finfo_h { text-align: center; padding: 4px; background-color: #010101; }
+#finfo_b { text-align: center; padding: 4px; }
 
 .menu {
 	font-size: 16px; background: #131313;
@@ -32,9 +38,8 @@ body {
 }
 
 .menu a { 
-	color: silver; text-decoration: none; 
-	padding-right: 1px; padding-left: 1px;
-	padding-bottom: 4px;
+	color: #999999; text-decoration: none; 
+	padding-right: 2px; padding-left: 2px;
 }
 
 .menu a:hover { 
@@ -47,13 +52,10 @@ body {
 }
 
 .text a { 
-	color: #ffffff; padding: 5px; 
-	transition: ease-in .4s text-decoration;
-	-moz-transition: ease-in .4s text-decoration;
-	-webkit-transition: ease-in .4s text-decoration;
-	-o-transition: ease-in .4s text-decoration;
+	color: #9900cc; padding: 5px; 
+	text-decoration: underline;
 }
-.text a:hover { color: #999999; text-decoration: none; padding: 5px; }
+.text a:hover { color: #eeeeee; }
 
 .text_small { font-size: 11px; }
 
@@ -101,7 +103,7 @@ body {
 #cdate { width: 15%; border: solid 1px #333333; font-size: 13px; }
 #cpost { width: 15%; border: solid 1px #333333; font-size: 13px; }
 
-#tblarge { width: 100%; vertical-align: top; border: solid 1px #333333; }
+#tblarge { width: 100%; vertical-align: top; }
 
 /* Post settings */
 

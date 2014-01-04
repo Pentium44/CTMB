@@ -337,7 +337,7 @@ EOD;
 				unlink("db/cat/$catid/post_$topicid.txt_by");
 				unlink("db/cat/$catid/post_$topicid.txt_replies");
 				unlink("db/cat/$catid/post_$topicid.txt_id");
-				echo "<div class='text'>Success: Post removed: <a href='admin_panel.php'>Back to panel</a></div>";
+				echo "<div class='text'>Success: Post removed: <a href='index.php'>Back to Index</a></div>";
 				//header( "refresh:2;url=index.php" );
 			}
 			else
