@@ -51,7 +51,7 @@ if (isset($_GET['action']))
 			print <<<EOD
 			<div class="text"><b><h2>Administration Panel</h2></b>
 			<b>Remove User</b><br>
-			<form action="admin_panel.php?action=rmuser" method="post">
+			<form action="ap.php?action=rmuser" method="post">
 			Username: <input type="text" name="username"><br>
 			<input type="submit" value="Remove User" name="remove_user" id="remove_user">
 			</div>	
@@ -81,7 +81,7 @@ EOD;
 			print <<<EOD
 			<div class="text"><b><h2>Administration Panel</h2></b>
 			<b>Remove User</b><br>
-			<form action="admin_panel.php?action=admin_user" method="post">
+			<form action="ap.php?action=admin_user" method="post">
 			Username in which you want to Administrate: <input type="text" name="username"><br>
 			<input type="submit" value="Administrate User" name="admin_user" id="admin_user">
 			</div>	
@@ -92,7 +92,7 @@ EOD;
 			print <<<EOD
 			<div class="text"><b><h2>Administration Panel</h2></b>
 			<b>Add Category</b><br>
-			<form action="admin_panel.php?action=addcat" method="post">
+			<form action="ap.php?action=addcat" method="post">
 			Category Title: <input type="text" name="cat_title"><br>
 			Category Description:<br>
 			<textarea name="cat_desc" cols="28" rows="8"></textarea><br>
@@ -105,7 +105,7 @@ EOD;
 			print <<<EOD
 			<div class="text"><b><h2>Administration Panel</h2></b>
 			<b>Delete a Category</b><br>
-			<form action="admin_panel.php?action=delcat" method="post">
+			<form action="ap.php?action=delcat" method="post">
 			Category ID: <input type="text" name="cat_id"><br>
 			<input type="submit" value="Delete" name="del_cat" id="del_cat">
 			</div>	
@@ -116,7 +116,7 @@ EOD;
 			print <<<EOD
 			<div class="text"><b><h2>Administration Panel</h2></b>
 			<b>Change a User's Color</b><br>
-			<form action="admin_panel.php?action=usercolor" method="post">
+			<form action="ap.php?action=usercolor" method="post">
 			Username: <input type="text" name="username_for_change"><br>
 			Color: <select name="usercolor">
 					<option value="#ff0000" name="#ff0000">Red</option>
@@ -139,7 +139,7 @@ EOD;
 			print <<<EOD
 			<div class="text"><b><h2>Administration Panel</h2></b>
 			<b>Change a User's Color</b><br>
-			<form action="admin_panel.php?action=userrank" method="post">
+			<form action="ap.php?action=userrank" method="post">
 			Username: <input type="text" name="username_for_change"><br>
 			User's Rank: <input type="text" name="userrank"><br>
 			<input type="submit" value="Change" name="change" id="change">
@@ -167,12 +167,13 @@ EOD;
 			if(file_exists("db/users/" . $_POST['username'] . ".validation")) { unlink('db/users/' . $_POST['username'] . '.validation'); }
 			if(file_exists("db/users/avatars/" . $_POST['username'] . ".*")) { unlink('db/users/avatars/' . $_POST['username'] . '.*'); }			
 			if(file_exists("db/users/" . $_POST['username'] . ".postnumber")) { unlink('db/users/' . $_POST['username'] . '.postnumber'); }
+			if(file_exists("db/users/" . $_POST['username'] . ".sig")) { unlink('db/users/' . $_POST['username'] . '.sig'); }
 				
 			$userlist = "db/userlist.txt";
 			$userlist_data = file_get_contents($userlist);
 			$remove_user_from_list = str_replace("<a href=\"user.php?action=userpanel&user=$user_to_replace\">$user_to_replace</a><br>", "", $userlist_data);
 			file_put_contents($userlist, $remove_user_from_list);
-			echo "<div class=\"text\">User removed: <a href='admin_panel.php'>Back to panel</a></div>";
+			echo "<div class=\"text\">User removed - <a href='ap.php'>Back to panel</a></div>";
 			//header( "refresh:2;url=admin_panel.php" );
 		}
 		else
@@ -193,7 +194,7 @@ EOD;
 				file_put_contents("db/users/$username.status", "admin");
 				file_put_contents("db/users/$username.logo", "Board Administrator");
 				file_put_contents("db/users/$username.color", $admin_color);
-				echo "<div class=\"text\">$username is now an administrator: <a href='admin_panel.php'>Back to panel</a></div>";
+				echo "<div class=\"text\">$username is now an administrator - <a href='ap.php'>Back to panel</a></div>";
 				//header( "refresh:2;url=admin_panel.php" );
 			}
 			else
@@ -233,7 +234,7 @@ EOD;
 			// Update amount of categories present
 			file_put_contents("db/cat.amount", $id);
 			
-			echo "<div class=\"text\">Category Created: <a href='admin_panel.php'>Back to panel</a></div>";
+			echo "<div class=\"text\">Category Created - <a href='ap.php'>Back to panel</a></div>";
 			//header( "refresh:2;url=admin_panel.php" );
 		}
 		else
@@ -251,12 +252,33 @@ EOD;
 			$cat_id = $_POST['cat_id'];
 			if(is_dir("db/cat/$cat_id"))
 			{
-				foreach(glob("db/cat/$cat_id/" . "*") as $file_to_remove)
+				$opencatdir = opendir("db/cat/$cat_id");
+				while(false != ($filename = readdir($opencatdir)))
 				{
-					unlink($file_to_remove);
+					// Don't try removing the parent directory or current directory
+					if($filename == ".." || $filename == ".") { continue; }
+					// Check if its a post dir or not
+					if(is_dir("db/cat/$cat_id/$filename"))
+					{
+						$openpostdir = opendir("db/cat/$cat_id/$filename");
+						while(false != ($postfilename = readdir($openpostdir)))
+						{
+							// Don't try removing the parent directory or current directory
+							if($filename == ".." || $filename == ".") { continue; }
+							// Delete found file
+							unlink("db/cat/$cat_id/$filename/$postfilename");
+						}
+						// Remove empty directory when done
+						rmdir("db/cat/$cat_id/$filename");
+					}
+					else
+					{
+						// Delete found file
+						unlink("db/cat/$cat_id/$filename");
+					}
 				}
 				rmdir("db/cat/$cat_id");
-				echo "<div class=\"text\">Category Removed: <a href='admin_panel.php'>Back to panel</a></div>";
+				echo "<div class=\"text\">Category Removed - <a href='ap.php'>Back to panel</a></div>";
 				//header( "refresh:2;url=admin_panel.php" );
 			}
 			else
@@ -279,7 +301,7 @@ EOD;
 			if(file_exists("db/users/$username_for_change.color"))
 			{
 				file_put_contents("db/users/$username_for_change.color", $usercolor);
-				echo "<div class=\"text\">User's color changed: <a href='admin_panel.php'>Back to panel</a></div>";
+				echo "<div class=\"text\">User's color changed - <a href='ap.php'>Back to panel</a></div>";
 				//header( "refresh:2;url=admin_panel.php" );
 			}
 			else
@@ -302,7 +324,7 @@ EOD;
 			if(file_exists("db/users/$username_for_change.rank"))
 			{
 				file_put_contents("db/users/$username_for_change.rank", $userlogo);
-				echo "<div class=\"text\">User's rank changed: <a href='admin_panel.php'>Back to panel</a></div>";
+				echo "<div class=\"text\">User's rank changed - <a href='ap.php'>Back to panel</a></div>";
 				//header( "refresh:2;url=admin_panel.php" );
 			}
 			else
@@ -319,9 +341,7 @@ EOD;
 	{
 		file_put_contents("db/logs/topics.txt", "");
 		file_put_contents("db/logs/posts.txt", "");
-		file_put_contents("db/logs/logins.txt", "");
-		echo "<div class=\"text\">Logs Cleared - Redirecting in 2 seconds.</div>";
-		header( "refresh:2;url=admin_panel.php" );
+		echo "<div class=\"text\">Logs Cleared - Redirecting in 2 seconds - <a href='ap.php'>Back to panel</a></div>";
 	}
 	if($action=="delpost")
 	{
@@ -329,15 +349,19 @@ EOD;
 		{
 			$catid = $_GET['cid'];
 			$topicid = $_GET['tid'];
-			if(file_exists("db/cat/$catid/post_$topicid.txt"))
+			if(is_dir("db/cat/$catid/$topicid"))
 			{
-				unlink("db/cat/$catid/post_$topicid.txt");
-				unlink("db/cat/$catid/post_$topicid.txt_title");
-				unlink("db/cat/$catid/post_$topicid.txt_date");
-				unlink("db/cat/$catid/post_$topicid.txt_by");
-				unlink("db/cat/$catid/post_$topicid.txt_replies");
-				unlink("db/cat/$catid/post_$topicid.txt_id");
-				echo "<div class='text'>Success: Post removed: <a href='index.php'>Back to Index</a></div>";
+				$openpostdir = opendir("db/cat/$catid/$topicid");
+				while(false != ($filename = readdir($openpostdir)))
+				{
+					// Don't try removing the parent directory or current directory
+					if($filename == ".." || $filename == ".") { continue; }
+					// Delete found file
+					unlink("db/cat/$catid/$topicid/$filename");
+				}
+				unlink("db/cat/$catid/$topicid.post");
+				rmdir("db/cat/$catid/$topicid/");
+				echo "<div class='text'>Success: Post removed - <a href='index.php'>Back to index</a></div>";
 				//header( "refresh:2;url=index.php" );
 			}
 			else
@@ -359,15 +383,15 @@ print <<<EOD
 	<div class="text">
 		<h2><b>Administrator Panel</b></h2>
 		<b>Managing Users</b><br>
-		<a href="admin_panel.php?action=panel&method=rmuser">Remove a User</a><br>
-		<a href="admin_panel.php?action=panel&method=usercolor">Change User Color</a><br>
-		<a href="admin_panel.php?action=panel&method=userrank">Change User Rank</a><br>
-		<a href="admin_panel.php?action=panel&method=admin_user">Administrate a User</a><br>
+		<a href="ap.php?action=panel&method=rmuser">Remove a User</a><br>
+		<a href="ap.php?action=panel&method=usercolor">Change User Color</a><br>
+		<a href="ap.php?action=panel&method=userrank">Change User Rank</a><br>
+		<a href="ap.php?action=panel&method=admin_user">Administrate a User</a><br>
 		<br><b>Managing the Board</b><br>
-		<a href="admin_panel.php?action=panel&method=logs">Board Logs</a><br>
-		<a href="admin_panel.php?action=clearlogs">Clear Board Logs</a><br>
-		<a href="admin_panel.php?action=panel&method=newcat">Add a Category</a><br>
-		<a href="admin_panel.php?action=panel&method=delcat">Delete a Category</a><br>
+		<a href="ap.php?action=panel&method=logs">Board Logs</a><br>
+		<a href="ap.php?action=clearlogs">Clear Board Logs</a><br>
+		<a href="ap.php?action=panel&method=newcat">Add a Category</a><br>
+		<a href="ap.php?action=panel&method=delcat">Delete a Category</a><br>
 	</div>
 EOD;
 }

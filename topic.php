@@ -51,14 +51,15 @@ if (isset($action))
 		{
 			$id = $_GET['id'];
 			$catid = $_GET['cid'];
-			if (file_exists("db/cat/$catid/post_$id.txt"))
+			if (file_exists("db/cat/$catid/$id/title"))
 			{
 				print <<<EOD
 			<div class="text">
 			<h2><b>Reply</b></h2>
 			<a href="index.php?action=help_bbcode">BBCode Help</a><br>
-			<form action="topic.php?action=doreply&id=$id&cid=$catid" method="post">
+			<form action="topic.php?action=doreply&id=$id&cid=$catid" method="post" enctype="multipart/form-data">
 			<textarea name="text" cols="35" rows="8">Post Body</textarea><br>
+			Attach image (Max 1MB) : <input type="file" id="file" name="file" /><br />
 			<input type="submit" value="Submit">
 			</div>
 EOD;
@@ -77,52 +78,83 @@ EOD;
 		{
 			if (file_exists("db/users/" . $_SESSION['ctmb-login-user'] . ".php"))
 			{
+				// Some variables
 				$username = $_SESSION['ctmb-login-user'];
-						$id = $_GET['id'];
-						$catid = $_GET['cid'];
-						$getoldcontent = file_get_contents("db/cat/$catid/post_$id.txt");
-						$text = htmlentities(stripslashes($_POST["text"]));
-						$text2 = nl2br($text);
-						include "bb.php";
-						$bb = bbcode_format($text2);
-						$get_user_color = file_get_contents("db/users/$username.color");
-						$get_user_logo = file_get_contents("db/users/$username.rank");
-	
-						// Write content //
-						$loadusercolor = "$('#color_$rand').load('load.php?action=color&name=$username');";
-						$loaduserrank = "$('#rank_$rand').load('load.php?action=rank&name=$username');";
-						$loadsig = "$('#sig_$rand').load('load.php?action=sig&name=$username');";
-						$str1 = "\n<tr><td class='userinfo'><div id='color_$rand'></div>\n";
-						$str2 = "<div class='text_small' id='rank_$rand'></div>\n";
-						$str3 = "<img style='margin: auto; width: 140px;' src='load.php?action=avatar&name=$username'><br>";
-						$str4 = "$date<br />$time</td><td class='userpost'>" . $bb . "\n";
-						$str5 = "<div id='sig_$rand' class='sig'></div>\n";
-						$str6 = "<script type='text/javascript'>" . $loadusercolor . $loaduserrank . $loadsig . "</script></td></tr>\n";
-						$newcontent = $str1 . $str2 . $str3 . $str4 . $str5 . $str6; 
+				$id = $_GET['id'];
+				$catid = $_GET['cid'];
+				$text = htmlentities(stripslashes($_POST["text"]));
+				
+				// Update number of replies		
+				$replies = file_get_contents("db/cat/$catid/$id/replies");
+				$replies = $replies + 1;
+				file_put_contents("db/cat/$catid/$id/replies", $replies);		
+				
+				// Add attachment - do first to make sure everything goes smoothly
+				$rand_name = substr(md5(microtime()),rand(0,26),5);
+				$allowedExts = array("gif", "jpeg", "jpg", "png");
+				$temp = explode(".", $_FILES["file"]["name"]);
+				$extension = end($temp);
+				if ((($_FILES["file"]["type"] == "image/gif")
+				|| ($_FILES["file"]["type"] == "image/x-gif")
+				|| ($_FILES["file"]["type"] == "image/jpeg")
+				|| ($_FILES["file"]["type"] == "image/x-jpeg")
+				|| ($_FILES["file"]["type"] == "image/x-jpg")
+				|| ($_FILES["file"]["type"] == "image/jpg")
+				|| ($_FILES["file"]["type"] == "image/pjpeg")
+				|| ($_FILES["file"]["type"] == "image/x-png")
+				|| ($_FILES["file"]["type"] == "image/png"))
+				&& ($_FILES["file"]["size"] < 1000000)
+				&& in_array($extension, $allowedExts))
+				{
+					if ($_FILES["file"]["error"] > 0 || $_FILES["file"]["size"] == 0)
+					{
+						echo "<!-- file error -->\n\n";
+					}	
+					else
+					{
+						move_uploaded_file($_FILES["file"]["tmp_name"],	"db/attachment/" . $_FILES["file"]["name"]);
+						if(file_exists("db/attachment/" . $_FILES["file"]["name"]))
+						{
+							// Randomize attachment name
+							rename("db/attachment/" . $_FILES["file"]["name"], "db/attachment/$rand_name.$extension");
+							// add attachment to post
+							file_put_contents("db/cat/$catid/$id/$replies.txt_a", "db/attachment/$rand_name.$extension");
+						}
+					}	
+				}
+				else
+				{
+					echo "<!-- file not found -->\n\n";
+				}	
+				
+				/*
+					Do some work with database
+				*/
+				
+				// Write post
+				file_put_contents("db/cat/$catid/$id/$replies.txt", $text);
+				// Write post owner
+				file_put_contents("db/cat/$catid/$id/$replies.txt_u", $username);
+				// Write post date
+				file_put_contents("db/cat/$catid/$id/$replies.txt_d", "$time<br />$date\n");
+				
+				//Add reply to logs
+				$log_posts_string = "<td>$username</td>\n<td>$id</td>\n<td>$date_string</td>\n<td>" . $_SERVER['REMOTE_ADDR'] . "</td>\n</tr><tr>\n\n";
+				$log_posts = "db/logs/posts.txt";
+				$old_log_content = file_get_contents($log_posts);
+				file_put_contents($log_posts, $log_posts_string . $old_log_content);
 						
-						file_put_contents("db/cat/$catid/post_$id.txt", $getoldcontent . $newcontent);
-						//Add reply to logs
-						$log_posts_string = "<td>$username</td>\n<td>$id</td>\n<td>$date_string</td>\n<td>" . $_SERVER['REMOTE_ADDR'] . "</td>\n</tr><tr>\n\n";
-						$log_posts = "db/logs/posts.txt";
-						$old_log_content = file_get_contents($log_posts);
-						file_put_contents($log_posts, $log_posts_string . $old_log_content);
+				//add new post to postnumber//
+				$postnumber = file_get_contents("db/users/$username.postnumber");
+				$postnumber = $postnumber + 1;
+				file_put_contents("db/users/$username.postnumber", $postnumber);
 						
-						//add new post to postnumber//
-						$postnumber = file_get_contents("db/users/$username.postnumber");
-						$postnumber = $postnumber + 1;
-						file_put_contents("db/users/$username.postnumber", $postnumber);
-						
-						$replies = file_get_contents("db/cat/$catid/post_$id.txt_replies");
-						$replies = $replies + 1;
-						file_put_contents("db/cat/$catid/post_$id.txt_replies", $replies);
-						
-						//Getting users color//
-						$usercolor = file_get_contents("db/users/$username.color");
-						file_put_contents("db/cat/$catid/last.txt", "<font color=\"$usercolor\">$username</font>");
-						print <<<EOD
-						<div class="text">Your reply to topic ID: $id was successful - <a href="view.php?tid=$id&cid=$catid">Topic post</a></div>
+				//Getting users color//
+				$usercolor = file_get_contents("db/users/$username.color");
+				file_put_contents("db/cat/$catid/last.txt", "<font color=\"$usercolor\">$username</font>");
+				print <<<EOD
+			<div class="text">Your reply to topic ID: $id was successful - <a href="view.php?tid=$id&cid=$catid">Topic post</a></div>
 EOD;
-						//header( "refresh:3;url=view.php?tid=$id&cid=$catid" );
 			}
 			else
 			{
@@ -140,8 +172,8 @@ EOD;
 	<div class="text">
 	<h2><b>Create a New Topic</b></h2>
 	<a href="index.php?action=help_bbcode">BBCode Help</a><br>
-	<form action="topic.php?action=donewtopic&cid=$catid" method="post">
-	Topic Name: <input type="text" name="topic"><br>
+	<form action="topic.php?action=donewtopic&cid=$catid" method="post" enctype="multipart/form-data">
+	Topic Name: <input type="text" name="topic" /><br />
 EOD;
 		//$user_status = file_get_contents("db/users/" . $_SESSION['ctmb-login-user'] . ".status");
 		//if($user_status=="admin")
@@ -150,8 +182,10 @@ EOD;
 		//}
 
 		print <<<EOD
-	<textarea name="text" cols="35" rows="8">Post Body</textarea><br>
-	<input type="submit" value="Submit">
+	<textarea name="text" cols="35" rows="8">Post Body</textarea><br />
+	Attach image (Max 1MB) : <input type="file" id="file" name="file" /><br />
+	<input type="submit" value="Submit" />
+	</form>
 	</div>
 EOD;
 	}
@@ -159,66 +193,99 @@ EOD;
 	{
 		if (file_exists("db/users/" . $_SESSION['ctmb-login-user'] . ".php"))
 		{
+			// Some variables
 			$username = $_SESSION['ctmb-login-user'];
-			$topic = $_POST['topic'];
+			$replies = "0"; // I have no idea why im using this variable
 			$catid = $_GET['cid'];
-					$text = htmlentities(stripslashes($_POST["text"]));
-					$text2 = nl2br($text);
-					include "bb.php";
-					$bb = bbcode_format($text2);
-					$get_user_color = file_get_contents("db/users/$username.color");
-					$get_user_logo = file_get_contents("db/users/$username.rank");
-
-					$loadusercolor = "$('#color_$rand').load('load.php?action=color&name=$username');";
-					$loaduserrank = "$('#rank_$rand').load('load.php?action=rank&name=$username');";
-					$loadsig = "$('#sig_$rand').load('load.php?action=sig&name=$username');";
-					$str1 = "\n<tr><td class='userinfo'><div id='color_$rand'></div>\n";
-					$str2 = "<div class='text_small' id='rank_$rand'></div>\n";
-					$str3 = "<img style='margin: auto; width: 140px;' src='load.php?action=avatar&name=$username'><br>";
-					$str4 = "$date<br />$time</td><td class='userpost'>" . $bb . "\n";
-					$str5 = "<div id='sig_$rand' class='sig'></div>\n";
-					$str6 = "<script type='text/javascript'>" . $loadusercolor . $loaduserrank . $loadsig . "</script></td></tr>\n";
-					$newcontent = "<h3 style='text-align:center'>$title</h3>" . $str1 . $str2 . $str3 . $str4 . $str5 . $str6; 
-
-					$id = file_get_contents("db/cat/$catid/post.amount");
-					$id = $id + 1;
-					
-					//Add topic creation to logs
-
-					$log_posts_string = "<td>$username</td>\n<td>$topic</td>\n<td>$id</td>\n<td>$date_string</td>\n<td>" . $_SERVER['REMOTE_ADDR'] . "</td>\n</tr><tr>\n\n";
-					$log_posts = "db/logs/topics.txt";
-					$old_log_content = file_get_contents($log_posts);
-					file_put_contents($log_posts, $log_posts_string . $old_log_content);
-					
-					// Write content to database -- check if sticky //
-					if(!isset($_POST['sticky']))
-					{
-						file_put_contents("db/cat/$catid/post_$id" . ".txt_title", $topic);
-						file_put_contents("db/cat/$catid/post_$id.txt", $newcontent);
-						file_put_contents("db/cat/$catid/post_$id" . ".txt_by", $username);
-						file_put_contents("db/cat/$catid/post_$id" . ".txt_date", $date_string);
-						file_put_contents("db/cat/$catid/post_$id" . ".txt_id", $id);
-						file_put_contents("db/cat/$catid/post_$id" . ".txt_replies", "1");
-						file_put_contents("db/cat/$catid/post_$id" . ".txt_views", "1");
-					}
+			$id = file_get_contents("db/cat/$catid/post.amount");
+			$id = $id + 1;
+			$text = htmlentities(stripslashes($_POST["text"]));
+			$topic = htmlentities(stripcslashes($_POST['topic']));
 			
-					//add new post to postnumber//
-					$postnumber = file_get_contents("db/users/$username.postnumber");
-					$postnumber = $postnumber + 1;
-					file_put_contents("db/users/$username.postnumber", $postnumber);
+			// Make post directory
+			file_put_contents("db/cat/$catid/$id.post", "$id");
+			mkdir("db/cat/$catid/$id", 0777);	
+			
+			// Add attachment - do first to make sure everything goes smoothly
+			$rand_name = substr(md5(microtime()),rand(0,26),5);
+			$allowedExts = array("gif", "jpeg", "jpg", "png");
+			$temp = explode(".", $_FILES["file"]["name"]);
+			$extension = end($temp);
+			if ((($_FILES["file"]["type"] == "image/gif")
+			|| ($_FILES["file"]["type"] == "image/x-gif")
+			|| ($_FILES["file"]["type"] == "image/jpeg")
+			|| ($_FILES["file"]["type"] == "image/x-jpeg")
+			|| ($_FILES["file"]["type"] == "image/x-jpg")
+			|| ($_FILES["file"]["type"] == "image/jpg")
+			|| ($_FILES["file"]["type"] == "image/pjpeg")
+			|| ($_FILES["file"]["type"] == "image/x-png")
+			|| ($_FILES["file"]["type"] == "image/png"))
+			&& ($_FILES["file"]["size"] < 1000000)
+			&& in_array($extension, $allowedExts))
+			{
+				if ($_FILES["file"]["error"] > 0 || $_FILES["file"]["size"] == 0)
+				{
+					echo "<!-- file error -->\n\n";
+				}
+				else
+				{
+					move_uploaded_file($_FILES["file"]["tmp_name"],	"db/attachment/" . $_FILES["file"]["name"]);
+					if(file_exists("db/attachment/" . $_FILES["file"]["name"]))
+					{
+						// Randomize attachment name
+						rename("db/attachment/" . $_FILES["file"]["name"], "db/attachment/$rand_name.$extension");
+						// add attachment to post
+						file_put_contents("db/cat/$catid/$id/$replies.txt_a", "db/attachment/$rand_name.$extension");
+					}
+				}	
+			}
+			else
+			{
+				echo "<!-- file not found -->\n\n";
+			}
+			
+			/*
+				Do some work with database
+			*/
+			
+			// Write post title
+			file_put_contents("db/cat/$catid/$id/title", $topic);
+			// Write post date
+			file_put_contents("db/cat/$catid/$id/date", $date_string);
+			// Write post
+			file_put_contents("db/cat/$catid/$id/$replies.txt", $text);
+			// Write post owner
+			file_put_contents("db/cat/$catid/$id/$replies.txt_u", $username);
+			file_put_contents("db/cat/$catid/$id/owner", $username);
+			// Write post date
+			file_put_contents("db/cat/$catid/$id/$replies.txt_d", "$time<br />$date\n");
+			// Write post views
+			file_put_contents("db/cat/$catid/$id/views", "1");
+			// Write post date
+			file_put_contents("db/cat/$catid/$id/replies", "0");
+			
+			//Add reply to logs
+			$log_posts_string = "<td>$username</td>\n<td>$id</td>\n<td>$date_string</td>\n<td>" . $_SERVER['REMOTE_ADDR'] . "</td>\n</tr><tr>\n\n";
+			$log_posts = "db/logs/posts.txt";
+			$old_log_content = file_get_contents($log_posts);
+			file_put_contents($log_posts, $log_posts_string . $old_log_content);
 					
-					//Getting users color//
-					$usercolor = file_get_contents("db/users/$username.color");
-					file_put_contents("db/cat/$catid/last.txt", "<font color=\"$usercolor\">$username</font>");
+			//add new post to postnumber//
+			$postnumber = file_get_contents("db/users/$username.postnumber");
+			$postnumber = $postnumber + 1;
+			file_put_contents("db/users/$username.postnumber", $postnumber);
 					
-					// Update amount of posts in category
-					file_put_contents("db/cat/$catid/post.amount", $id);
-					
-					// Successful!
-					print <<<EOD
-					<div class="text">The creaation of this topic ($id) was successful - <a href="view.php?tid=$id&cid=$catid">To topic($id)</a></div>
+			//Getting users color//
+			$usercolor = file_get_contents("db/users/$username.color");
+			file_put_contents("db/cat/$catid/last.txt", "<font color=\"$usercolor\">$username</font>");
+				
+			// Update amount of posts in category
+			file_put_contents("db/cat/$catid/post.amount", $id);
+				
+			// Successful!
+			print <<<EOD
+			<div class="text">The creaation of this topic ($id) was successful - <a href="view.php?tid=$id&cid=$catid">To topic (ID: $id)</a></div>
 EOD;
-					//header( "refresh:3;url=view.php?tid=$id&cid=$catid" );
 		}
 		else
 		{

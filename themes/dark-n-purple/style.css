@@ -39,16 +39,16 @@ body {
 
 .menu a { 
 	color: #999999; text-decoration: none; 
-	padding-right: 2px; padding-left: 2px;
+	padding-right: 1px; padding-left: 1px;
 }
 
 .menu a:hover { 
-	color: white;
+	color: #ffffff;
 }
 
 .text {
 	padding: 12px; background: #131313;
-	border: solid 1px #444444; border-radius: 4px;
+	border: solid 1px #9900cc;
 }
 
 .text a { 
@@ -126,4 +126,16 @@ body {
 .sig {
 	border-top: solid 1px #333333;
 	padding: 6px;
+}
+
+/* Attachments */
+
+.attachment {
+	padding: 4px;
+	border: solid 1px #333333;
+}
+
+.attachment img { 
+	display: block;
+	max-width: 300px;
 }

@@ -97,11 +97,12 @@ EOD;
 			if(file_exists("db/users/" . $_POST['username'] . ".php"))
 			{
 				include "db/users/" . $_POST['username'] . ".php";
-				if($_POST['password']==$userpass)
+				$password_hash = sha1(md5($_POST['password']));
+				if($password_hash==$userpass)
 				{
 					$theme = file_get_contents("db/users/" . $_POST['username'] . ".theme");
 					$_SESSION['ctmb-login-user'] = $_POST['username'];
-					$_SESSION['ctmb-login-pass'] = $_POST['password'];
+					$_SESSION['ctmb-login-pass'] = $password_hash;
 					$_SESSION['ctmb-theme'] = $theme;
 					echo "<div class='text'>Logged in - <a href='index.php'>Back to index</a></div>\n";
 					//header("Location: index.php");

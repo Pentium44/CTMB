@@ -18,6 +18,7 @@ $forum_latest_user = file_get_contents("db/users/latest");
 	<head>
 		<title><?php echo $title ?></title>
 		<link rel="stylesheet" type="text/css" href="themes/<?php echo $theme ?>/style.css">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
 	</head>
 <body>
 	<table class="title" style="width:100%;">
@@ -55,26 +56,26 @@ $forum_latest_user = file_get_contents("db/users/latest");
 					if($check_admin!="admin")
 					{
 						print <<<EOD
-						<center><div class="menu"><a href="index.php">Index</a>|<a href="index.php?action=logout">Logout</a>|<a href="index.php?action=userlist">Userlist</a>|<a href="user_panel.php">User Panel</a></div></center><br />
+						<center><div class="menu"><a href="index.php">Index</a> &bull; <a href="index.php?action=logout">Logout</a> &bull; <a href="index.php?action=userlist">Userlist</a> &bull; <a href="up.php">User Panel</a></div></center><br />
 EOD;
 					}
 					else
 					{
 						print <<<EOD
-						<center><div class="menu"><a href="index.php">Index</a>|<a href="index.php?action=logout">Logout</a>|<a href="index.php?action=userlist">Userlist</a>|<a href="user_panel.php">User Panel</a>|<a href="admin_panel.php">Admin Panel</a></div></center><br />
+						<center><div class="menu"><a href="index.php">Index</a> &bull; <a href="index.php?action=logout">Logout</a> &bull; <a href="index.php?action=userlist">Userlist</a> &bull; <a href="up.php">User Panel</a> &bull; <a href="ap.php">Admin Panel</a></div></center><br />
 EOD;
 					}					
 				}
 				else
 				{
 					print <<<EOD
-					<center><div class="menu"><a href="index.php">Index</a>|<a href="index.php?action=login">Login</a>|<a href="user.php?action=register">Register</a>|<a href="index.php?action=userlist">Userlist</a></div></center><br />
+					<center><div class="menu"><a href="index.php">Index</a> &bull; <a href="index.php?action=login">Login</a> &bull; <a href="user.php?action=register">Register</a> &bull; <a href="index.php?action=userlist">Userlist</a></div></center><br />
 EOD;
 				}
 			}
 			else
 			{
 				print <<<EOD
-				<center><div class="menu"><a href="index.php">Index</a>|<a href="index.php?action=login">Login</a>|<a href="user.php?action=register">Register</a>|<a href="index.php?action=userlist">Userlist</a></div></center><br />
+				<center><div class="menu"><a href="index.php">Index</a> &bull; <a href="index.php?action=login">Login</a> &bull; <a href="user.php?action=register">Register</a> &bull; <a href="index.php?action=userlist">Userlist</a></div></center><br />
 EOD;
 			} ?>

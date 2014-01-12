@@ -32,43 +32,5 @@ if(isset($_GET['action']))
 			}
 		}
 	}
-	else if($action=="sig")
-	{
-		if(isset($_GET['name']))
-		{
-			$user = $_GET['name'];
-			if(file_exists("db/users/$user.sig"))
-			{ 
-			 	$sig = file_get_contents("db/users/$user.sig");
-			 	echo "<div style='font-size:11px;'>$sig</div>\n";
-			}
-			else
-			{
-				echo "<div style='font-size:11px;'>No signature</div>\n";
-			}
-		}
-	}
-	else if($action=="color")
-	{
-		if(isset($_GET['name']))
-		{
-			$user = $_GET['name'];
-			$color = file_get_contents("db/users/$user.color");
-			echo "<b style='color:$color;'>$user</b>\n";
-		}		
-	}
-	else if($action=="rank")
-	{
-		if(isset($_GET['name']))
-		{
-			$user = $_GET['name'];
-			$rank = file_get_contents("db/users/$user.rank");
-			echo "$rank";
-		}		
-	}
 }
-
-//
-//EOF//
-
 ?>

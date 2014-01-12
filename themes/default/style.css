@@ -144,3 +144,15 @@ body {
 	border-top: solid 1px #333333;
 	padding: 6px;
 }
+
+/* Attachments */
+
+.attachment {
+	padding: 4px;
+	border: solid 1px #333333;
+}
+
+.attachment img { 
+	display: block;
+	max-width: 300px;
+}

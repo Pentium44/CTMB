@@ -32,20 +32,22 @@ else
 		$password = $_POST['password'];
 		$desc = stripslashes(htmlentities($_POST['desc']));
 		$image_upload_size = "300000";
-		$config_string1 = "<?php\n //CTMB Config generation \n\n \$title = \"$title\";\n \$desc = \"$desc\";\n \$admin_color = \"#ff00ff\";\n \$user_color = \"#00ff00\";\n  \$image_upload_size = \"$image_upload_size\";\n \$version = \"2.81\";\n";
+		$config_string1 = "<?php\n //CTMB Config generation \n\n \$title = \"$title\";\n \$desc = \"$desc\";\n \$admin_color = \"#ff00ff\";\n \$user_color = \"#00ff00\";\n  \$image_upload_size = \"$image_upload_size\";\n \$version = \"3.0\";\n";
 		
 		// Close the php tag //
 		$config_string4 = "?>\n";
 		file_put_contents("config.php", $config_string1 . $config_string4);
 	
 		// Create Owner //
+		$password_hash = sha1(md5($password));
 		file_put_contents("db/users/" . $username . ".validation", "valid");
 		file_put_contents("db/users/$username.status", "admin");
 		file_put_contents("db/users/$username.color", "#ff0000");
 		file_put_contents("db/users/$username.rank", "Board Owner");
 		file_put_contents("db/users/$username.postnumber", "0");
+		file_put_contents("db/users/$username.sig", "Board Owner");
 		file_put_contents("db/users/$username.theme", "default"); // Set users theme (default)
-		file_put_contents("db/users/" . $username . ".php", "<?php \$userpass = \"$password\"; ?>");
+		file_put_contents("db/users/" . $username . ".php", "<?php \$userpass = \"$password_hash\"; ?>");
 		$user = "<a href=\"user.php?action=userpanel&user=$username\">$username</a><br>\n";
 		file_put_contents("db/userlist.txt", "");
 		file_put_contents("db/userlist.txt", $user);

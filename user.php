@@ -65,14 +65,15 @@ if (isset($_GET['action']))
 								$old_users = file_get_contents("db/pendingusers.txt");
 								file_put_contents("db/pendingusers.txt", $username . "<br>" . $old_users);
 							}
-							
+							$password_hash = sha1(md5($password));
 							if(file_exists("db/users/$username.php")) { echo "<div class='text'>Error: User Exists!</div>"; } else {
 							file_put_contents("db/users/$username.status", "user");
 							file_put_contents("db/users/$username.color", $user_color);
 							file_put_contents("db/users/$username.rank", "Board User");
 							file_put_contents("db/users/$username.postnumber", "0");
+							file_put_contents("db/users/$username.sig", "User signature");
 							file_put_contents("db/users/$username.theme", "default"); // Set users theme (default)
-							$pass_string = "<?php \$userpass = \"$password\" ?>";
+							$pass_string = "<?php \$userpass = \"$password_hash\" ?>";
 							file_put_contents("db/users/" . $username . ".php", $pass_string);
 							$old_users = file_get_contents("db/userlist.txt");
 							$user = "<a href=\"user.php?action=userpanel&user=$username\">$username</a><br>\n";

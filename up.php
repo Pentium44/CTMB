@@ -69,7 +69,7 @@ if(isset($_SESSION['ctmb-login-user']) && isset($_SESSION['ctmb-login-pass']))
 									"db/users/avatars/" . $_FILES["file"]["name"]);
 									rename("db/users/avatars/" . $_FILES["file"]["name"], "db/users/avatars/$username.$extension");
 									file_put_contents("db/users/avatars/$username.txt", "$username.$extension");
-									echo "<div class='text'>Avatar Uploaded, this will be your avatar when you make posts, and topics</div>";
+									echo "<div class='text'>Avatar Uploaded, this will be your avatar when you make posts, and topics - <a href='up.php'>Back to user panel</a></div>";
 								}
 								else
 								{
@@ -77,7 +77,7 @@ if(isset($_SESSION['ctmb-login-user']) && isset($_SESSION['ctmb-login-pass']))
 									"db/users/avatars/" . $_FILES["file"]["name"]);
 									rename("db/users/avatars/" . $_FILES["file"]["name"], "db/users/avatars/$username.$extension");
 									file_put_contents("db/users/avatars/$username.txt", "$username.$extension");
-									echo "<div class='text'>Avatar Uploaded, this will be your avatar when you make posts, and topics</div>";
+									echo "<div class='text'>Avatar Uploaded, this will be your avatar when you make posts, and topics - <a href='up.php'>Back to user panel</a></div>";
 								}
 							}
 						}
@@ -90,7 +90,7 @@ if(isset($_SESSION['ctmb-login-user']) && isset($_SESSION['ctmb-login-pass']))
 					{
 						print <<<EOD
 <div class="text">
-<form action="user_panel.php?action=avatar&method=upload" method="post"
+<form action="up.php?action=avatar&method=upload" method="post"
 enctype="multipart/form-data">
 <label for="file">Filename:</label>
 <input type="file" name="file" id="file"><br>
@@ -106,9 +106,9 @@ EOD;
 					{
 						if($_POST['usersig']!="")
 						{
-							$sig = bbcode_format(nl2br(htmlentities(stripcslashes($_POST['usersig']))));
+							$sig = $_POST['usersig'];
 							file_put_contents("db/users/$username.sig", $sig);
-							echo "<div class='text'>Signature set: <a href='user_panel.php'>Click here</a></div>";
+							echo "<div class='text'>Signature set - <a href='up.php'>Back to user panel</a></div>";
 							//header( "refresh:2;url=user_panel.php" );
 						}
 						else
@@ -118,12 +118,17 @@ EOD;
 					}
 					else
 					{
+						$signature = file_get_contents("db/users/$username.sig");
 						print <<<EOD
 <div class="text">
 <h3 style='text-align:center;'>Change your signature</h3>
 <a href="index.php?action=help_bbcode">BBCode Help</a><br>
-<form action="user_panel.php?action=sig&method=dosig" method="post">
-<textarea cols='36' rows='12' name='usersig'>Your signature!</textarea><br />
+<form action="up.php?action=sig&method=dosig" method="post">
+<textarea cols='36' rows='12' name='usersig'>
+EOD;
+					echo $signature;
+print <<<EOD
+</textarea><br />
 <input type="submit" name="submit" value="Save">
 </form>
 </div>
@@ -137,7 +142,7 @@ EOD;
 						$theme_select = $_POST['theme'];
 						file_put_contents("db/users/$username.theme", $theme_select);
 						$_SESSION['ctmb-theme'] = $theme_select;
-						echo "<div class='text'>Theme set: <a href='user_panel.php'>Click here</a></div>";
+						echo "<div class='text'>Theme set - <a href='up.php'>Back to user panel</a></div>";
 						//header( "refresh:2;url=user_panel.php" );
 					}
 					else
@@ -146,7 +151,7 @@ EOD;
 <div class="text">
 <h3 style='text-align:center;'>Change your signature</h3>
 <a href="index.php?action=help_bbcode">BBCode Help</a><br>
-<form action="user_panel.php?action=theme&method=settheme" method="post">
+<form action="up.php?action=theme&method=settheme" method="post">
 <select name="theme">
 EOD;
 						$themedir = "themes/";
@@ -173,9 +178,9 @@ EOD;
 				print <<<EOD
 <div class="text">
 <h2>User Control Panel</h2>
-<a href="user_panel.php?action=avatar">Change your Avatar</a><br />
-<a href="user_panel.php?action=sig">Change your Signature</a><br />
-<a href="user_panel.php?action=theme">Change your Theme</a><br />
+<a href="up.php?action=avatar">Change your Avatar</a><br />
+<a href="up.php?action=sig">Change your Signature</a><br />
+<a href="up.php?action=theme">Change your Theme</a><br />
 </div>
 EOD;
 			}

@@ -12,6 +12,7 @@ $theme = "default"; // Theme name (for stylesheet)
 	<head>
 		<title><?php echo $title ?></title>
 		<link rel="stylesheet" type="text/css" href="themes/<?php echo $theme ?>/style.css">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
 	</head>
 <body>
 	<div class="title"><?php echo $title; ?><div style="font-size:18px;color:silver;"><?php echo $desc; ?></div></div>
@@ -26,13 +27,13 @@ $theme = "default"; // Theme name (for stylesheet)
 					if($check_admin!="admin")
 					{
 						print <<<EOD
-						<!--<center>--><div class="menu"><a href="index.php">Forum Index</a><a href="index.php?action=logout">Logout</a><a href="index.php?action=userlist">Userlist</a><a href="user_panel.php">Control Panel</a></div><!--</center>--><br />
+						<!--<center>--><div class="menu"><a href="index.php">Forum Index</a><a href="index.php?action=logout">Logout</a><a href="index.php?action=userlist">Userlist</a><a href="up.php">Control Panel</a></div><!--</center>--><br />
 EOD;
 					}
 					else
 					{
 						print <<<EOD
-						<!--<center>--><div class="menu"><a href="index.php">Forum Index</a><a href="index.php?action=logout">Logout</a><a href="index.php?action=userlist">Userlist</a><a href="user_panel.php">Control Panel</a><a href="admin_panel.php">Administration</a></div><!--</center>--><br />
+						<!--<center>--><div class="menu"><a href="index.php">Forum Index</a><a href="index.php?action=logout">Logout</a><a href="index.php?action=userlist">Userlist</a><a href="up.php">Control Panel</a><a href="ap.php">Administration</a></div><!--</center>--><br />
 EOD;
 					}					
 				}
