@@ -1,9 +1,9 @@
 <?php 
-/* CTMB Theme
- * (C) Chris Dorman, 2013-2014 - CC-BY-NC 3.0
- */
-
-include "config.php"; 
+/* 
+	CTMB Theme - Default for CTMB 3.0+
+	(C) Chris Dorman, 2013-2014 - CC-BY-NC 3.0
+	Background image made by acmlm developers, credit given to them
+*/
 
 $theme = "default"; // Theme name (for stylesheet)
 ?>

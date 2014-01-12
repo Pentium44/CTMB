@@ -1,14 +1,11 @@
 <?php 
-/* 
-	CTMB Theme - Dark N' Purple for CTMB 3.0+
-	(C) Chris Dorman, 2013-2014 - CC-BY-NC 3.0
-	Background image made by acmlm developers, credit given to them
+/*
+	Lust themes for CTMB 3.0+
+	(C) Chris Dorman, 2014 CC-BY-SA 3.0
 */
 
-include "config.php"; 
-
  // Theme name (for stylesheet)
-$theme = "dark-n-purple";
+$theme = "lust-light";
 
 // Amount of views on the forum
 $forum_views = file_get_contents("db/forum.views");
@@ -23,6 +20,7 @@ $forum_latest_user = file_get_contents("db/users/latest");
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 	</head>
 <body>
+<div class="board">
 	<table class="title" style="width:100%;">
 		<tr>
 			<td>
@@ -47,7 +45,6 @@ $forum_latest_user = file_get_contents("db/users/latest");
 		</tr>
 	</table>
 
-	<div class="board">
 		<?php
 			if(isset($_SESSION['ctmb-login-user']) && isset($_SESSION['ctmb-login-pass']) && file_exists("db/users/" . $_SESSION['ctmb-login-user'] . ".php"))
 			{
