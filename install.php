@@ -32,7 +32,7 @@ else
 		$password = $_POST['password'];
 		$desc = stripslashes(htmlentities($_POST['desc']));
 		$image_upload_size = "300000";
-		$config_string1 = "<?php\n //CTMB Config generation \n\n \$title = \"$title\";\n \$desc = \"$desc\";\n \$admin_color = \"#ff00ff\";\n \$user_color = \"#00ff00\";\n  \$image_upload_size = \"$image_upload_size\";\n \$version = \"3.0\";\n";
+		$config_string1 = "<?php\n //CTMB Config generation \n\n \$title = \"$title\";\n \$desc = \"$desc\";\n \$admin_color = \"#ff00ff\";\n \$user_color = \"#00ff00\";\n  \$image_upload_size = \"$image_upload_size\";\n \$version = \"3.0.1\";\n";
 		
 		// Close the php tag //
 		$config_string4 = "?>\n";
