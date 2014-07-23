@@ -48,9 +48,9 @@ else
 		file_put_contents("db/users/$username.sig", "Board Owner");
 		file_put_contents("db/users/$username.theme", "default"); // Set users theme (default)
 		file_put_contents("db/users/" . $username . ".php", "<?php \$userpass = \"$password_hash\"; ?>");
-		$user = "<a href=\"user.php?action=userpanel&user=$username\">$username</a><br>\n";
-		file_put_contents("db/userlist.txt", "");
-		file_put_contents("db/userlist.txt", $user);
+		file_put_contents("db/users/$username.txt", "$username");
+		
+		if(!file_exists("db/cat")) { mkdir("db/cat", 0777); }
 		
 		// Set up forum views database
 		file_put_contents("db/forum.views", "0");

@@ -33,10 +33,32 @@ if (isset($_GET['action']))
 {
 	if ($_GET['action']=="userlist")
 	{
-		$userlist = file_get_contents("db/userlist.txt");
-		echo "<div class=\"text\"><h2>Board Users</h2>";
-		echo $userlist;
-		echo "</div>";
+		echo "<div class=\"text\"><h2>Board users</h2>";
+		echo "<table id='tblarge'>";
+		foreach(glob("db/users/*.txt") as $userfile) {
+			$user = file_get_contents($userfile);
+			$userposts = file_get_contents("db/users/$user.postnumber");
+			$usertheme = file_get_contents("db/users/$user.theme");
+			$userrank = file_get_contents("db/users/$user.rank");
+			print <<<EOD
+			<tr>
+				<td style="width: 25%;">
+					<a href='user.php?action=userpanel&user=$user'>$user</a>
+				</td>
+				<td style="width: 25%;">
+					Posts: $userposts
+				</td>
+				<td style="width: 25%;">
+					Theme: $usertheme
+				</td>
+				<td style="width: 25%;">
+					Rank: $userrank
+				</td>
+			</tr>
+EOD;
+		}
+		echo "</table>\n";
+		echo "</div>\n";
 
 	}
 	

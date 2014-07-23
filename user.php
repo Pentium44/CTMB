@@ -71,13 +71,16 @@ if (isset($_GET['action']))
 							file_put_contents("db/users/$username.color", $user_color);
 							file_put_contents("db/users/$username.rank", "Board User");
 							file_put_contents("db/users/$username.postnumber", "0");
+							file_put_contents("db/users/$username.txt", "$username");
 							file_put_contents("db/users/$username.sig", "User signature");
 							file_put_contents("db/users/$username.theme", "default"); // Set users theme (default)
 							$pass_string = "<?php \$userpass = \"$password_hash\" ?>";
 							file_put_contents("db/users/" . $username . ".php", $pass_string);
-							$old_users = file_get_contents("db/userlist.txt");
-							$user = "<a href=\"user.php?action=userpanel&user=$username\">$username</a><br>\n";
-							file_put_contents("db/userlist.txt", $user . $old_users);
+							
+							// Userlist was removed, now list is loaded dynamically
+							//$old_users = file_get_contents("db/userlist.txt");
+							//$user = "<a href=\"user.php?action=userpanel&user=$username\">$username</a><br>\n";
+							//file_put_contents("db/userlist.txt", $user . $old_users);
 							
 							// Set owner account as latest created user
 							file_put_contents("db/users/latest", "<b style=\"color:$user_color;\">$username</b>");
@@ -115,14 +118,22 @@ EOD;
 			$user = $_GET['user'];
 			if(file_exists("db/users/$user.php"))
 			{
-				echo "<div class=\"text\"><h2>User - $user</h2>";
+				include_once("bb.php");
 				$usercolor = file_get_contents("db/users/$user.color");
 				$userrank = file_get_contents("db/users/$user.rank");
 				$userpostnumber = file_get_contents("db/users/$user.postnumber");
-				echo "Username: <font color=\"$usercolor\">$user</font><br>";
-				echo "User rank: $userrank<br>";
-				echo "Number of posts: $userpostnumber<br>";
-				echo "User avatar:<br><img style='margin: auto; width: 140px;' src=\"load.php?action=avatar&name=$user\" alt=\"User avatar\" /><br><br>";
+				$usersig = nl2br(bbcode_format(stripslashes(htmlentities(file_get_contents("db/users/$user.sig")))));
+				$userstatus = file_get_contents("db/users/$user.status");
+				echo "\n<div class=\"text\"><h2 style='color:$usercolor;'>$user</h2>\n";
+				echo "<table id='tblarge'><tr>\n<td class='userinfo'>Users avatar:<br />\n<img style='margin: auto; max-width: 140px;' src='load.php?action=avatar&name=$user' alt='User Avatar' /></td>\n";
+				echo "<td class='userpost'>\n";
+				echo "User rank: $userrank<br />\n";
+				echo "User is set as admin: \n";
+				if($userstatus=="admin") { echo "True"; } else { echo "False"; }
+				echo "<br />\n";
+				echo "Number of posts: $userpostnumber<br />\n";
+				echo "User signature:\n<div style='padding:8px;' class='text_small'>$usersig</div>";
+				echo "</td></tr></table>"; // Close table and such
 				echo "</div>";
 			}
 			else

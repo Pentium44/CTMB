@@ -168,11 +168,13 @@ EOD;
 			if(file_exists("db/users/avatars/" . $_POST['username'] . ".*")) { unlink('db/users/avatars/' . $_POST['username'] . '.*'); }			
 			if(file_exists("db/users/" . $_POST['username'] . ".postnumber")) { unlink('db/users/' . $_POST['username'] . '.postnumber'); }
 			if(file_exists("db/users/" . $_POST['username'] . ".sig")) { unlink('db/users/' . $_POST['username'] . '.sig'); }
-				
-			$userlist = "db/userlist.txt";
-			$userlist_data = file_get_contents($userlist);
-			$remove_user_from_list = str_replace("<a href=\"user.php?action=userpanel&user=$user_to_replace\">$user_to_replace</a><br>", "", $userlist_data);
-			file_put_contents($userlist, $remove_user_from_list);
+			if(file_exists("db/users/" . $_POST['username'] . ".txt")) { unlink('db/users/' . $_POST['username'] . '.txt'); }
+			
+			// Userlist removed, users are now loaded dynamically
+			//$userlist = "db/userlist.txt";
+			//$userlist_data = file_get_contents($userlist);
+			//$remove_user_from_list = str_replace("<a href=\"user.php?action=userpanel&user=$user_to_replace\">$user_to_replace</a><br>", "", $userlist_data);
+			//file_put_contents($userlist, $remove_user_from_list);
 			echo "<div class=\"text\">User removed - <a href='ap.php'>Back to panel</a></div>";
 			//header( "refresh:2;url=admin_panel.php" );
 		}
@@ -222,6 +224,8 @@ EOD;
 			// add new category id to count
 			$id = file_get_contents("db/cat.amount");
 			$id = $id + 1;
+			
+			if(!file_exists("db/cat")) { mkdir("db/cat", 0777); }
 			
 			mkdir("db/cat/$id", 0777);
 			file_put_contents("db/cat/$id/title.txt", $cat_title);

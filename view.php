@@ -52,9 +52,9 @@ if (isset($_GET['tid']) && isset($_GET['cid']))
 			$upost = nl2br(bbcode_format(stripslashes(htmlentities(file_get_contents($postid)))));
 			print <<<EOD
 			<tr><td class='userinfo'>
-				<div><b style="color:$ucolor">$user</b></div>
+				<div><a style="color:$ucolor;" href="user.php?action=userpanel&user=$user">$user</a></div>
 				<div class='text_small'>$urank</div>
-				<img style='margin: auto; width: 140px;' src='load.php?action=avatar&name=$user'><br>
+				<img style='margin: auto; max-width: 140px;' src='load.php?action=avatar&name=$user'><br>
 				<div>$pdate</div>
 			</td><td class='userpost'>
 				$upost
