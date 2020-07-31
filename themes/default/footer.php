@@ -9,7 +9,7 @@ $forum_latest_user = file_get_contents("db/users/latest");
 </div>
 <br><div class="footer">
 	Forum views: <?php echo $forum_views; ?> - Latest registery: <?php echo $forum_latest_user; ?><br />
-	&copy; CTMB <?php echo $version; ?> - 2012, 2013, 2014 - Chris Dorman
+	&copy; CTMB <?php echo $version; ?> - 2012-2020 - Chris Dorman
 </div>
 
 </body>

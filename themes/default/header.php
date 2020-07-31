@@ -1,8 +1,8 @@
 <?php 
 /* 
 	CTMB Theme - Default for CTMB 3.0+
-	(C) Chris Dorman, 2013-2014 - CC-BY-NC 3.0
-	Background image made by acmlm developers, credit given to them
+	(C) Chris Dorman, 2013-2020 - CC-BY-NC-SA 4.0
+	Background image used as open domain from free-images.net
 */
 
 $theme = "default"; // Theme name (for stylesheet)
@@ -27,26 +27,26 @@ $theme = "default"; // Theme name (for stylesheet)
 					if($check_admin!="admin")
 					{
 						print <<<EOD
-						<!--<center>--><div class="menu"><a href="index.php">Forum Index</a><a href="index.php?action=logout">Logout</a><a href="index.php?action=userlist">Userlist</a><a href="up.php">Control Panel</a></div><!--</center>--><br />
+						<!--<center>--><div class="menu"><a href="index.php">Home</a><a href="index.php?action=logout">Logout</a><a href="index.php?action=userlist">Userlist</a><a href="up.php">Control Panel</a></div><!--</center>--><br />
 EOD;
 					}
 					else
 					{
 						print <<<EOD
-						<!--<center>--><div class="menu"><a href="index.php">Forum Index</a><a href="index.php?action=logout">Logout</a><a href="index.php?action=userlist">Userlist</a><a href="up.php">Control Panel</a><a href="ap.php">Administration</a></div><!--</center>--><br />
+						<!--<center>--><div class="menu"><a href="index.php">Home</a><a href="index.php?action=logout">Logout</a><a href="index.php?action=userlist">Userlist</a><a href="up.php">Control Panel</a><a href="ap.php">Administration</a></div><!--</center>--><br />
 EOD;
 					}					
 				}
 				else
 				{
 					print <<<EOD
-					<!--<center>--><div class="menu"><a href="index.php">Forum Index</a><a href="user.php?action=register">Register</a><a href="index.php?action=login">Login</a><a href="index.php?action=userlist">Userlist</a></div><!--</center>--><br />
+					<!--<center>--><div class="menu"><a href="index.php">Home</a><a href="user.php?action=register">Register</a><a href="index.php?action=login">Login</a><a href="index.php?action=userlist">Userlist</a></div><!--</center>--><br />
 EOD;
 				}
 			}
 			else
 			{
 				print <<<EOD
-				<!--<center>--><div class="menu"><a href="index.php">Forum Index</a><a href="user.php?action=register">Register</a><a href="index.php?action=login">Login</a><a href="index.php?action=userlist">Userlist</a></div><!--</center>--><br />
+				<!--<center>--><div class="menu"><a href="index.php">Home</a><a href="user.php?action=register">Register</a><a href="index.php?action=login">Login</a><a href="index.php?action=userlist">Userlist</a></div><!--</center>--><br />
 EOD;
 			} ?>

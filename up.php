@@ -1,14 +1,13 @@
 <?php
 session_start();
 /*
- * CTMB - Crazy Tiny Message Board - (C) CrazyCoder Productions, 2012-2013
+ * CTMB - Crazy Tiny Message Board - 2012-2020
  * CTMB (Crazy Tiny Message Board) is a simple, flatfile database message
- * board that is created by Chris Dorman (CrazyCoder Productions), 2012-2013
- * CTMB is released under the Creative Commons - BY - NC 3.0 NonPorted license
- * 
- * Maintained by Chris Dorman
+ * board that is created by Chris Dorman (cddo.cf), 2012-2020
+ * CTMB is released under the Creative Commons - BY-NC-SA 4.0 NonPorted license
+ *
  * CTMB is released with NO WARRANTY.
- * 
+ *
  */
 
 if(!file_exists("config.php")) 

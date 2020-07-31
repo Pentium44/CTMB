@@ -1,30 +1,45 @@
 /*
- * CTMB - Crazy Tiny Message Board - (C) CrazyCoder Productions, 2012-2013
+ * CTMB - Crazy Tiny Message Board - 2012-2020
  * CTMB (Crazy Tiny Message Board) is a simple, flatfile database message
- * board that is created by Chris Dorman (CrazyCoder Productions), 2012-2013
- * CTMB is released under the Creative Commons - BY - NC 3.0 NonPorted license
- * 
- * Website : http://www.cddo.us/ - Maintained By Chris Dorman
+ * board that is created by Chris Dorman (cddo.cf), 2012-2020
+ * CTMB is released under the Creative Commons - BY-NC-SA 4.0 NonPorted license
+ *
  * CTMB is released with NO WARRANTY.
- * 
+ *
  */
 @import url(http://fonts.googleapis.com/css?family=Open+Sans:300,400); /* Default font */
 @import url(http://fonts.googleapis.com/css?family=Didact+Gothic); /* For menu links */
+@import url(http://fonts.googleapis.com/css?family=Roboto+Condensed); /* for header fonts */
+
+@viewport {
+  width: device-width;
+    zoom: 1;
+    min-zoom: 0.5;
+    max-zoom: 3;
+    user-zoom: fixed;
+} /* mobile devices */
+
+@font-face {
+	src: url('fonts/longhaul.ttf');
+	font-family: "Longhaul";
+}
 
 body {
 	font-family: "Open Sans", Arial, sans-serif;
 	color: #ffffff;
-	/*background-image:url('images/bg.jpg');*/
+	width: 900px;
+	background-image:url('images/bg.jpg');
 	/*background-image:url('images/bg-black.jpg');*/
-	background-image:url('images/blue_grad2.png');
-	/*background-size: 100% auto;
+	/*background-image:url('images/blue_grad2.png');*/
+	background-size: 100% auto;
 	-o-background-size: 100% auto;
 	-moz-background-size: 100% auto;
 	-webkit-background-size: 100% auto;
 	background-attachment: fixed;
-	background-position: center;*/
+	background-position: center;
 	background-color: #444444;
 	font-size: 14px;
+	margin: 0 auto;
 }
 
 .title {
@@ -33,6 +48,7 @@ body {
 	border-right: solid 1px #444444; border-left: solid 1px #444444;
 	border-top: solid 1px #444444;
 	box-shadow: 0px 0px 10px #000000;
+	font-family: "Longhaul", sans-serif;
 }
 
 .menu {
@@ -43,8 +59,10 @@ body {
 }
 
 .menu a { 
-	color: silver; text-decoration: none; 
-	padding-right: 5px; padding-left: 5px;
+	color: silver; 
+	text-decoration: none; 
+	padding-right: 10px; 
+	padding-left: 10px;
 	
 	/* some effects */
 	transition: ease-in .4s color, ease-in .4s background-color, ease-in .4s text-shadow;

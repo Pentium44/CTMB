@@ -1,7 +1,7 @@
 <?php 
 /*
 	Lust themes for CTMB 3.0+
-	(C) Chris Dorman, 2014 CC-BY-SA 3.0
+	(C) Chris Dorman, 2014-2020 CC-BY-NC-SA 4.0
 */
 
  // Theme name (for stylesheet)

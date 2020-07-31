@@ -2,11 +2,12 @@
 ///CTMB - Crazy Tiny Message Board
 /////
 
-CTMB is a simple, small, and light message board that uses flatfile format as 
-the database, and as for the posts. CTMB is release under the CC-BY-NC 3.0, and
-does not include ANY KIND OF WARRANTY. CTMB was created by:
-	* Chris Dorman, 2012-2013 <cddo@riseup.net>
-	
+ CTMB - Crazy Tiny Message Board - 2012-2020
+ CTMB (Crazy Tiny Message Board) is a simple, flatfile database message
+ board that is created by Chris Dorman (cddo.cf), 2012-2020
+ CTMB is released under the Creative Commons - BY-NC-SA 4.0 NonPorted license
+
+ CTMB is released with NO WARRANTY.	
 ////	
 /// Installing CTMB
 ////
@@ -24,6 +25,12 @@ Thanks, Chris
 ////
 /// Change Log
 ////
+
+3.0.2--
+* Modified themes, cleaned up CSS.
+* Removed normal users access to posts in subsection 1 (Admin only, great ideas
+are to use as announcements subforum)
+* Updated CC license to CC BY-NC-SA 4.0
 
 3.0.1--
 * Modified user panel

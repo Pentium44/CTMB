@@ -1,10 +1,10 @@
 <?php
 session_start();
 /*
- * CTMB - Crazy Tiny Message Board - (C) CrazyCoder Productions, 2012-2013
+ * CTMB - Crazy Tiny Message Board - 2012-2020
  * CTMB (Crazy Tiny Message Board) is a simple, flatfile database message
- * board that is created by Chris Dorman (CrazyCoder Productions), 2012-2013
- * CTMB is released under the Creative Commons - BY - NC 3.0 NonPorted license
+ * board that is created by Chris Dorman (cddo.cf), 2012-2020
+ * CTMB is released under the Creative Commons - BY-NC-SA 4.0 NonPorted license
  * 
  * CTMB is released with NO WARRANTY.
  * 
@@ -135,7 +135,13 @@ else if(isset($_GET['cid']))
 		
 	}
 	echo "</table>\n";
-	echo "<a href=\"topic.php?action=newtopic&cid=$catid\">New Topic</a>\n</div>";
+
+	$check_admin = file_get_contents("db/users/" . $_SESSION['ctmb-login-user'] . ".status");
+        if($check_admin!="admin" && $catid=="1") {
+		echo "<!-- not an admin -->";
+	} else {
+		echo "<a href=\"topic.php?action=newtopic&cid=$catid\">New Topic</a>\n</div>";
+	}
 }
 else
 {

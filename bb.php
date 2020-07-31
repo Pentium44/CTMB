@@ -15,7 +15,10 @@
 // based on http://www.phpit.net/article/create-bbcode-php/  
 // modified by www.vision.to  
 // please keep credits, thank you :-)  
-// document your changes.  
+// document your changes.
+
+
+
 function bbcode_format($str) {   
   
     $simple_search = array(   
